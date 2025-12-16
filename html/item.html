@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory Item</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+  <header class="top-bar">
+    <div style="display:flex; align-items:center; gap:15px;">
+      <img src="../images/logo_noBG.JPG" class="logo">
+      <h1 id="item-title">Item Inventory</h1>
+    </div>
+  
+    <a href="dashboard.html" class="nav-btn">Dashboard</a>
+  </header>
+
+<main style="padding:40px; max-width:1200px; margin:auto;">
+
+  <!-- ADD ENTRY FORM -->
+  <h2>Add Entry</h2>
+
+  <form id="entry-form" style="margin-bottom:30px;">
+    <input type="number" placeholder="Opening Balance" id="opening" required>
+    <input type="number" placeholder="Received" id="received" required>
+    <input type="number" placeholder="Dispatched" id="dispatched" required>
+    <input type="number" placeholder="Lost" id="lost" required>
+    <input type="text" placeholder="Remarks" id="remarks">
+    <button type="submit">Add</button>
+  </form>
+
+  <!-- TABLE -->
+  <table border="1" width="100%" cellpadding="10">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Opening</th>
+        <th>Received</th>
+        <th>Dispatched</th>
+        <th>Lost</th>
+        <th>Ending</th>
+        <th>Remarks</th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+
+</main>
+
+<footer>
+  © Farah Poultry Farm
+</footer>
+
+<script src="../js/item.js"></script>
+</body>
+</html>

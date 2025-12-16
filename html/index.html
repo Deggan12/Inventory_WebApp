@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Farah Poultry Farm</title>
+
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="top-bar">
+    <img src="../images/logo_noBG.JPG" alt="Farah Poultry Farm Logo" class="logo">
+    <h1>Farah Poultry Farm</h1>
+  </header>
+
+  <!-- BANNER -->
+  <section class="hero">
+    <div class="hero-text">
+      <h2>Inventory Management System</h2>
+      <p>Track stock levels and manage inventory efficiently</p>
+    </div>
+  </section>
+
+  <!-- ITEM CARDS -->
+  <main class="dashboard">
+
+    <div class="card" data-item="maize">
+      <img src="../images/maize.jpg" alt="Maize">
+      <h3>Maize (kg)</h3>
+    </div>
+
+    <div class="card" data-item="bran">
+      <img src="../images/bran.jpg" alt="Bran">
+      <h3>Bran (kg)</h3>
+    </div>
+
+    <div class="card" data-item="premix">
+      <img src="../images/premix.jpg" alt="Premix">
+      <h3>Premix (kg)</h3>
+    </div>
+
+    <div class="card" data-item="oilcakes">
+      <img src="../images/oilcakes.jpg" alt="Oil Cakes">
+      <h3>Oil Cakes (kg)</h3>
+    </div>
+
+    <div class="card" data-item="limestone">
+      <img src="../images/limestone.jpg" alt="Limestone">
+      <h3>Limestone (kg)</h3>
+    </div>
+
+    <div class="card" data-item="medicine">
+      <img src="../images/medicine.jpg" alt="Medicine">
+      <h3>Medicine</h3>
+    </div>
+
+  </main>
+
+  <!-- DASHBOARD PANELS -->
+  <section class="dashboard-panels">
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat-card">
+        <h4>Total Stock</h4>
+        <p>12,450 kg</p>
+      </div>
+
+      <div class="stat-card">
+        <h4>Received Today</h4>
+        <p>1,200 kg</p>
+      </div>
+
+      <div class="stat-card">
+        <h4>Dispatched Today</h4>
+        <p>950 kg</p>
+      </div>
+
+      <div class="stat-card">
+        <h4>Lost</h4>
+        <p>45 kg</p>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts">
+
+      <div class="chart-card">
+        <h4>Stock Movement</h4>
+        <canvas id="barChart"></canvas>
+      </div>
+
+      <div class="chart-card">
+        <h4>Stock Distribution</h4>
+        <canvas id="doughnutChart"></canvas>
+      </div>
+
+      <div class="chart-card full">
+        <h4>Monthly Usage</h4>
+        <canvas id="lineChart"></canvas>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    © Farah Poultry Farm
+  </footer>
+
+  <!-- SCRIPTS (MUST BE AT BOTTOM) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../js/dashboard.js"></script>
+  <script src="../js/view.js"></script>
+
+</body>
+</html>

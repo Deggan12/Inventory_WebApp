@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | Farah Poultry Farm</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body>
+
+<header class="top-bar">
+  <img src="../images/logo_noBG.JPG" class="logo" />
+  <h1>Farah Poultry Farm</h1>
+</header>
+
+<section class="dashboard-panels">
+
+  <div class="stats">
+    <div class="stat-card">
+      <h4>Total Stock</h4>
+      <p>12,450 kg</p>
+    </div>
+    <div class="stat-card">
+      <h4>Received Today</h4>
+      <p>1,200 kg</p>
+    </div>
+    <div class="stat-card">
+      <h4>Dispatched Today</h4>
+      <p>950 kg</p>
+    </div>
+    <div class="stat-card">
+      <h4>Lost</h4>
+      <p>45 kg</p>
+    </div>
+  </div>
+
+  <div class="charts">
+    <div class="chart-card">
+      <h4>Stock Movement</h4>
+      <canvas id="barChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h4>Stock Distribution</h4>
+      <canvas id="doughnutChart"></canvas>
+    </div>
+
+    <div class="chart-card full">
+      <h4>Monthly Usage</h4>
+      <canvas id="lineChart"></canvas>
+    </div>
+  </div>
+
+</section>
+
+<footer>© Farah Poultry Farm</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../js/dashboard.js"></script>
+
+</body>
+</html>

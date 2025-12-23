@@ -10,6 +10,7 @@
 <body>
 
 <header class="top-bar">
+  <div class="burger" id="burger">☰</div>
   <div class="nav-left">
     <img src="/images/logo_noBG.JPG" class="logo">
     <h1>Farah Poultry Farm</h1>
@@ -64,6 +65,16 @@
 
 <script src="/js/item.js"></script>
 <script type="module" src="/js/auth-ui.js"></script>
+
+<script>
+  const burger = document.getElementById("burger");
+  const nav = document.querySelector(".nav-right");
+
+  burger?.addEventListener("click", () => {
+    nav.classList.toggle("show");
+  });
+</script>
+
 
 </body>
 </html>

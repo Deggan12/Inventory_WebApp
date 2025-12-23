@@ -1,55 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard | Farah Poultry Farm</title>
-  <link rel="stylesheet" href="../css/styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body>
 
 <header class="top-bar">
-  <img src="../images/logo_noBG.JPG" class="logo" />
-  <h1>Farah Poultry Farm</h1>
+  <div class="nav-left">
+    <img src="../images/logo_noBG.JPG" class="logo">
+    <h1>Farah Poultry Farm</h1>
+  </div>
+
+  <nav class="nav-right">
+    <a href="index.html" class="nav-btn">Home</a>
+    <a href="dashboard.html" class="nav-btn">Dashboard</a>
+  
+    <!-- Auth buttons -->
+    <a href="login.html" class="nav-btn" id="login-btn">Login</a>
+    <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
+  </nav>
+  
 </header>
 
 <section class="dashboard-panels">
 
-  <div class="stats">
-    <div class="stat-card">
-      <h4>Total Stock</h4>
-      <p>12,450 kg</p>
+  <!-- TOP AREA -->
+  <div class="dashboard-top">
+
+    <!-- LOW STOCK ALERT -->
+    <div id="low-stock-panel" class="low-stock-panel hidden">
+      <h4>⚠️ Low Stock Alert</h4>
+      <p id="low-stock-count"></p>
+      <ul id="low-stock-list"></ul>
     </div>
-    <div class="stat-card">
-      <h4>Received Today</h4>
-      <p>1,200 kg</p>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat-card">
+        <h4>Total Stock</h4>
+        <p>—</p>
+      </div>
+      <div class="stat-card">
+        <h4>Received Today</h4>
+        <p>—</p>
+      </div>
+      <div class="stat-card">
+        <h4>Dispatched Today</h4>
+        <p>—</p>
+      </div>
+      <div class="stat-card">
+        <h4>Lost</h4>
+        <p>—</p>
+      </div>
     </div>
-    <div class="stat-card">
-      <h4>Dispatched Today</h4>
-      <p>950 kg</p>
-    </div>
-    <div class="stat-card">
-      <h4>Lost</h4>
-      <p>45 kg</p>
-    </div>
+
   </div>
 
+  <!-- ITEM STATUS GRID -->
+<div class="item-status-grid" id="item-status-grid"></div>
+
+
+  <!-- CHARTS GRID -->
   <div class="charts">
+
+    <!-- BAR CHART -->
     <div class="chart-card">
       <h4>Stock Movement</h4>
       <canvas id="barChart"></canvas>
     </div>
 
+    <!-- DOUGHNUT CHART -->
     <div class="chart-card">
       <h4>Stock Distribution</h4>
       <canvas id="doughnutChart"></canvas>
     </div>
 
+    <!-- LINE CHART (FULL WIDTH) -->
     <div class="chart-card full">
       <h4>Monthly Usage</h4>
+      <p style="font-weight:600; margin-bottom:8px; color:#666;">
+        Select item:
+      </p>
+      
+
+      <!-- ITEM TOGGLES -->
+      <div id="item-toggles" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+        <button class="toggle-btn active" data-item="maize">Maize</button>
+        <button class="toggle-btn" data-item="bran">Bran</button>
+        <button class="toggle-btn" data-item="premix">Premix</button>
+        <button class="toggle-btn" data-item="oilcakes">Oil Cakes</button>
+        <button class="toggle-btn" data-item="limestone">Limestone</button>
+        <button class="toggle-btn" data-item="medicine">Medicine</button>
+      </div>
+
       <canvas id="lineChart"></canvas>
     </div>
+
   </div>
 
 </section>
@@ -57,7 +107,9 @@
 <footer>© Farah Poultry Farm</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="../js/dashboard.js"></script>
+<script type="module" src="../js/dashboard.js"></script>
+<script type="module" src="../js/auth-ui.js"></script>
+
 
 </body>
 </html>

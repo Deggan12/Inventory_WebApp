@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Main site styles -->
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body class="auth-page">
+
+  <div class="auth-container">
+    <h2>Admin Login</h2>
+
+    <form id="login-form">
+      <input
+        type="email"
+        id="email"
+        placeholder="Email"
+        required
+      />
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        required
+      />
+
+      <button type="submit">Login</button>
+    </form>
+
+    <p id="error" class="error-message"></p>
+  </div>
+
+  <script type="module" src="../js/auth.js"></script>
+</body>
+</html>

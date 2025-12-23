@@ -15,6 +15,8 @@
     <h1>Farah Poultry Farm</h1>
   </div>
 
+  <div class="burger" id="burger">☰</div>
+
   <nav class="nav-right">
     <a href="index.html" class="nav-btn">Home</a>
     <a href="dashboard.html" class="nav-btn">Dashboard</a>
@@ -109,6 +111,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module" src="/js/dashboard.js"></script>
 <script type="module" src="/js/auth-ui.js"></script>
+
+<script>
+  const burger = document.getElementById("burger");
+  const nav = document.querySelector(".nav-right");
+
+  burger.addEventListener("click", () => {
+    nav.classList.toggle("show");
+  });
+</script>
 
 
 </body>

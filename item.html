@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -21,7 +21,7 @@
     <a href="dashboard.html" class="nav-btn">Dashboard</a>
   
     <!-- Auth buttons -->
-    <a href="login.html" class="nav-btn" id="login-btn">Login</a>
+    <!-- <a href="login.html" class="nav-btn" id="login-btn">Login</a>
     <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
   </nav>
   
@@ -75,6 +75,86 @@
   });
 </script>
 
+
+</body>
+</html> --> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Item Inventory - Farah Poultry Farm</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+
+<body>
+
+<header class="top-bar">
+  <div class="nav-left">
+    <img src="/images/logo_noBG.JPG" class="logo" alt="Farah Poultry Farm logo">
+    <h1>Farah Poultry Farm</h1>
+  </div>
+
+  <div class="burger" id="burger">☰</div>
+
+  <nav class="nav-right" id="nav-menu">
+    <a href="index.html" class="nav-btn">Home</a>
+    <a href="dashboard.html" class="nav-btn">Dashboard</a>
+    <a href="login.html" class="nav-btn" id="login-btn">Login</a>
+    <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
+  </nav>
+</header>
+
+<main class="content">
+  <h2 id="item-title" class="page-title">Item Inventory</h2>
+
+  <div id="alert-box" class="alert hidden">
+    ⚠️ Low stock alert: this item is below the minimum level.
+  </div>
+
+  <!-- ENTRY FORM (HIDDEN BY AUTH SCRIPT WHEN LOGGED OUT) -->
+  <form id="entry-form" class="entry-form">
+    <input type="number" id="opening" placeholder="Opening (kg)" required />
+    <input type="number" id="received" placeholder="Received (kg)" required />
+    <input type="number" id="dispatched" placeholder="Dispatched (kg)" required />
+    <input type="number" id="lost" placeholder="Lost (kg)" required />
+    <input type="text" id="remarks" placeholder="Remarks (optional)" />
+    <button type="submit">Add Entry</button>
+  </form>
+
+  <!-- TABLE -->
+  <div class="table-container">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Opening</th>
+          <th>Received</th>
+          <th>Dispatched</th>
+          <th>Lost</th>
+          <th>Ending</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer>© Farah Poultry Farm</footer>
+
+<script src="/js/item.js"></script>
+<script type="module" src="/js/auth-ui.js"></script>
+
+<script>
+  const burger = document.getElementById("burger");
+  const nav = document.querySelector(".nav-right");
+
+  burger.addEventListener("click", () => {
+    nav.classList.toggle("show");
+  });
+</script>
 
 </body>
 </html>

@@ -245,8 +245,16 @@ main {
 ================================================= */
 .content {
   max-width: 1200px;
-  margin: auto;
-  padding: 40px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  width: 100%;
+}
+
+.page-title {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 26px;
+  font-weight: 700;
 }
 
 /* ENTRY FORM */
@@ -254,7 +262,14 @@ main {
   display: grid;
   grid-template-columns: repeat(5, 1fr) auto;
   gap: 12px;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .entry-form {
+    grid-template-columns: 1fr;
+  }
 }
 
 .entry-form input {
@@ -282,16 +297,15 @@ main {
 .table-container {
   background: white;
   border-radius: 16px;
-  padding: 20px;
+  padding: 24px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   overflow-x: auto;
+  width: 100%;
 }
 
 .modern-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 10px;
-  font-size: 14px;
+  min-width: 800px;
 }
 
 .modern-table thead th {
@@ -639,6 +653,10 @@ footer {
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     display: none;
+  }
+
+  .nav-right {
+    z-index: 1000;
   }
 
   .nav-right.show {

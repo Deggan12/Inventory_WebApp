@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Medicine Categories - Farah Poultry Farm</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+
+<body>
+
+<header class="top-bar">
+  <div class="nav-left">
+    <img src="/images/logo_noBG.JPG" class="logo">
+    <h1>Farah Poultry Farm</h1>
+  </div>
+
+  <div class="burger" id="burger">☰</div>
+
+  <nav class="nav-right">
+    <a href="index.html" class="nav-btn">Home</a>
+    <a href="dashboard.html" class="nav-btn">Dashboard</a>
+    <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
+    <a href="login.html" class="nav-btn" id="login-btn">Login</a>
+    <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
+  </nav>
+</header>
+
+<main class="content">
+  <h2 class="page-title">Medicine Categories</h2>
+
+  <!-- Add New Category Form (Admin Only) -->
+  <div id="add-category-section" class="add-category-section hidden">
+    <form id="add-category-form" class="add-category-form">
+      <input type="text" id="category-name" placeholder="New category name" required />
+      <button type="submit">+ Add Category</button>
+    </form>
+  </div>
+
+  <!-- Main Categories Grid -->
+  <div class="categories-grid">
+    <div class="category-card" data-category="vitamins">
+      <h3>Vitamins</h3>
+      <p class="subcategory-count"></p>
+    </div>
+    <div class="category-card" data-category="vaccine">
+      <h3>Vaccine</h3>
+      <p class="subcategory-count"></p>
+    </div>
+    <div class="category-card" data-category="medicine">
+      <h3>Medicine</h3>
+      <p class="subcategory-count"></p>
+    </div>
+    <div class="category-card" data-category="anti-stress">
+      <h3>Anti-Stress</h3>
+      <p class="subcategory-count"></p>
+    </div>
+    <div class="category-card" data-category="anti-parasite">
+      <h3>Anti-Parasite</h3>
+      <p class="subcategory-count"></p>
+    </div>
+  </div>
+</main>
+
+<footer>© Farah Poultry Farm</footer>
+
+<script type="module" src="/js/medicine-categories.js"></script>
+<script type="module" src="/js/auth-ui.js"></script>
+
+<script>
+  const burger = document.getElementById("burger");
+  const nav = document.querySelector(".nav-right");
+
+  burger.addEventListener("click", () => {
+    nav.classList.toggle("show");
+  });
+</script>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-import { supabase } from "../js/supabase.js";
+import { supabase } from "./supabase.js";
 
 /* ===============================
    GLOBALS
@@ -23,26 +23,29 @@ const capitalize = (name) =>
    FETCH DATA
 ================================ */
 async function loadData() {
-  const { data: itemsData, error: itemsError } = await supabase
-    .from("items")
-    .select("*")
-    .order("id");
-
-  const { data: entriesData, error: entriesError } = await supabase
-    .from("entries")
-    .select("*")
-    .order("created_at");
-
-  if (itemsError || entriesError) {
-    console.error(itemsError || entriesError);
-    return;
+    const { data: itemsData, error: itemsError } = await supabase
+      .from("items")
+      .select("*")
+      .order("name");
+  
+    const { data: entriesData, error: entriesError } = await supabase
+      .from("entries")
+      .select("*")
+      .order("created_at");
+  
+    if (itemsError || entriesError) {
+      console.error(itemsError || entriesError);
+      return;
+    }
+  
+    // Remove medicine everywhere
+    items = itemsData.filter(i => i.name !== "medicine");
+    const allowedIds = new Set(items.map(i => i.id));
+    entries = entriesData.filter(e => allowedIds.has(e.item_id));
+  
+    buildDashboard();
   }
-
-  items = itemsData;
-  entries = entriesData;
-
-  buildDashboard();
-}
+  
 
 /* ===============================
    DASHBOARD CORE
@@ -74,10 +77,12 @@ function buildDashboard() {
 
   // STAT CARDS
   const stats = document.querySelectorAll(".stat-card p");
-  stats[0].textContent = `${totalStock} kg`;
-  stats[1].textContent = `${receivedToday} kg`;
-  stats[2].textContent = `${dispatchedToday} kg`;
-  stats[3].textContent = `${lostToday} kg`;
+  if (stats.length >= 4) {
+    stats[0].textContent = `${totalStock} kg`;
+    stats[1].textContent = `${receivedToday} kg`;
+    stats[2].textContent = `${dispatchedToday} kg`;
+    stats[3].textContent = `${lostToday} kg`;
+  }
 
   buildItemStatus();
   buildLowStockAlert();
@@ -133,7 +138,7 @@ function buildLowStockAlert() {
 
   lowItems.forEach(i => {
     const li = document.createElement("li");
-    li.textContent = `${capitalize(i.name)} – ${i.stock} kg`;
+    li.textContent = `${capitalize(i.name)} — ${i.stock} kg`;
     list.appendChild(li);
   });
 }

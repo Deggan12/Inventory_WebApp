@@ -44,54 +44,96 @@ const MIN_STOCK = {
    ADMIN CHECK
 ================================ */
 async function checkAdmin() {
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
+  console.log("Checking admin status...");
+  
+  // Get the session (not the user) - this is more reliable
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (sessionError) {
+    console.error("Error getting session:", sessionError);
     disableForm();
-    hideAdminButton();
     return;
   }
+
+  if (!session) {
+    console.log("No session found - user not logged in");
+    disableForm();
+    return;
+  }
+
+  const userId = session.user.id;
+  console.log("User ID from session:", userId);
 
   const { data, error } = await supabase
     .from("admins")
     .select("user_id")
-    .eq("user_id", user.id)
-    .single();
+    .eq("user_id", userId)
+    .maybeSingle(); // Use maybeSingle instead of single to avoid error if no rows
 
-  if (!error && data) {
-    isAdmin = true;
-  } else {
+  console.log("Admin query result:", { data, error });
+
+  if (error) {
+    console.error("Error checking admin:", error);
     disableForm();
-    hideAdminButton();
+    return;
   }
+
+  if (data) {
+    console.log("User IS an admin!");
+    isAdmin = true;
+    enableForm();
+  } else {
+    console.log("User is NOT an admin");
+    disableForm();
+  }
+}
+
+/* ===============================
+   ENABLE FORM (FOR ADMINS)
+================================ */
+function enableForm() {
+  console.log("Enabling form...");
+  if (!form) return;
+  
+  // Show the form
+  form.style.display = "grid";
+  
+  // Remove any "view-only" messages
+  const msgs = document.querySelectorAll(".content > p");
+  msgs.forEach(msg => {
+    if (msg.textContent.includes("view-only")) {
+      msg.remove();
+    }
+  });
+  
+  console.log("Form enabled!");
 }
 
 /* ===============================
    DISABLE FORM (READ ONLY)
 ================================ */
 function disableForm() {
+  console.log("Disabling form...");
   if (!form) return;
 
-  form.style.opacity = "0.5";
-  form.querySelectorAll("input, button").forEach(el => {
-    el.disabled = true;
-  });
+  // Hide the form
+  form.style.display = "none";
 
-  const note = document.createElement("p");
-  note.style.marginTop = "10px";
-  note.style.color = "#999";
-  note.textContent = "Admin access required to add entries.";
-  form.prepend(note);
-}
+  // Check if message already exists
+  const existingMsg = Array.from(document.querySelectorAll(".content > p"))
+    .find(p => p.textContent.includes("view-only"));
+  
+  if (existingMsg) {
+    return;
+  }
 
-/* ===============================
-   HIDE ADMIN BUTTON
-================================ */
-function hideAdminButton() {
-  const adminBtn = document.querySelector(".admin-btn");
-  if (adminBtn) adminBtn.style.display = "none";
+  // Add view-only message
+  const msg = document.createElement("p");
+  msg.textContent = "This inventory is view-only.";
+  msg.style.color = "#999";
+  msg.style.marginTop = "15px";
+  msg.style.marginBottom = "15px";
+  form.parentNode.insertBefore(msg, form);
 }
 
 /* ===============================
@@ -104,10 +146,25 @@ async function loadEntries() {
     .from("items")
     .select("id, stock")
     .eq("name", item)
-    .single();
+    .maybeSingle(); // Use maybeSingle instead of single
 
   if (itemError) {
-    console.error(itemError);
+    console.error("Error loading item:", itemError);
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="7">Error loading data. Please refresh the page.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  if (!itemRow) {
+    console.error("Item not found:", item);
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="7">Item "${item}" not found in database</td>
+      </tr>
+    `;
     return;
   }
 
@@ -118,7 +175,7 @@ async function loadEntries() {
     .order("created_at", { ascending: true });
 
   if (error) {
-    console.error(error);
+    console.error("Error loading entries:", error);
     return;
   }
 
@@ -155,13 +212,21 @@ form.addEventListener("submit", async e => {
 
   const ending = opening + received - dispatched - lost;
 
-  const { data: itemRow } = await supabase
+  console.log("Submitting entry:", { opening, received, dispatched, lost, ending });
+
+  const { data: itemRow, error: itemError } = await supabase
     .from("items")
     .select("id")
     .eq("name", item)
-    .single();
+    .maybeSingle();
 
-  await supabase.from("entries").insert({
+  if (itemError || !itemRow) {
+    console.error("Error fetching item:", itemError);
+    alert("Error: Could not find item");
+    return;
+  }
+
+  const { data: entryData, error: insertError } = await supabase.from("entries").insert({
     item_id: itemRow.id,
     opening,
     received,
@@ -170,11 +235,24 @@ form.addEventListener("submit", async e => {
     remarks
   });
 
-  await supabase
+  if (insertError) {
+    console.error("Error inserting entry:", insertError);
+    alert("Error adding entry: " + insertError.message);
+    return;
+  }
+
+  const { error: updateError } = await supabase
     .from("items")
     .update({ stock: ending })
     .eq("id", itemRow.id);
 
+  if (updateError) {
+    console.error("Error updating stock:", updateError);
+    alert("Error updating stock: " + updateError.message);
+    return;
+  }
+
+  console.log("Entry added successfully!");
   form.reset();
   loadEntries();
 });
@@ -216,26 +294,14 @@ function checkLowStock(stock) {
 }
 
 /* ===============================
-   INIT
+   INIT - Wait a bit for auth to load
 ================================ */
-(async () => {
+async function init() {
+  // Small delay to let auth-ui.js set up the session
+  await new Promise(resolve => setTimeout(resolve, 300));
+  
   await checkAdmin();
-  loadEntries();
-})();
-
-/* ===============================
-   HIDE "ADD ENTRY" FOR NON ADMINS
-================================ */
-
-const { data: { session } } = await supabase.auth.getSession();
-
-if (!session || !isAdmin) {
-  form.style.display = "none";
-
-  const msg = document.createElement("p");
-  msg.textContent = "This inventory is view-only.";
-  msg.style.color = "#999";
-  msg.style.marginTop = "15px";
-  form.parentNode.insertBefore(msg, form);
+  await loadEntries();
 }
 
+init();

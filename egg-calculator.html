@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Egg Production Cost - Farah Poultry Farm</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+
+<body>
+
+<header class="top-bar">
+  <div class="nav-left">
+    <img src="/images/logo_noBG.JPG" class="logo">
+    <h1>Farah Poultry Farm</h1>
+  </div>
+
+  <div class="burger" id="burger">☰</div>
+
+  <nav class="nav-right">
+    <a href="index.html" class="nav-btn">Home</a>
+    <a href="dashboard.html" class="nav-btn">Dashboard</a>
+    <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
+    <a href="login.html" class="nav-btn" id="login-btn">Login</a>
+    <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
+  </nav>
+  
+</header>
+
+<main class="content">
+  <h2 class="page-title">Egg Production Cost Calculator</h2>
+
+  <div class="calculator-container">
+    
+    <!-- INGREDIENT PRICES SECTION -->
+    <div class="calculator-section">
+      <h3>Ingredient Prices (per quintal)</h3>
+      <div class="input-grid">
+        <div class="input-group">
+          <label for="price-maize">Maize</label>
+          <input type="number" id="price-maize" placeholder="0.00" step="0.01" required />
+        </div>
+        <div class="input-group">
+          <label for="price-oilcakes">Oil Cakes</label>
+          <input type="number" id="price-oilcakes" placeholder="0.00" step="0.01" required />
+        </div>
+        <div class="input-group">
+          <label for="price-bran">Bran</label>
+          <input type="number" id="price-bran" placeholder="0.00" step="0.01" required />
+        </div>
+        <div class="input-group">
+          <label for="price-premix">Premix</label>
+          <input type="number" id="price-premix" placeholder="0.00" step="0.01" required />
+        </div>
+        <div class="input-group">
+          <label for="price-limestone">Limestone</label>
+          <input type="number" id="price-limestone" placeholder="0.00" step="0.01" required />
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTION DATA SECTION -->
+    <div class="calculator-section">
+      <h3>Production Data</h3>
+      <div class="input-grid">
+        <div class="input-group">
+          <label for="total-feed">Total Feed Produced (quintals)</label>
+          <input type="number" id="total-feed" placeholder="0.00" step="0.01" required />
+        </div>
+        <div class="input-group">
+          <label for="overhead">Overhead Cost</label>
+          <input type="number" id="overhead" placeholder="0.00" step="0.01" required />
+        </div>
+        <div class="input-group">
+          <label for="total-eggs">Total Eggs Produced</label>
+          <input type="number" id="total-eggs" placeholder="0" required />
+        </div>
+      </div>
+    </div>
+
+    <!-- CALCULATE BUTTON -->
+    <button id="calculate-btn" class="calculate-btn">Calculate Cost</button>
+    <button id="edit-ratios-btn" class="calculate-btn" style="background:#444; margin-top:-10px;">
+      Edit Ingredient Percentages
+    </button>
+    
+    <div id="ratios-editor" class="calculator-section hidden">
+      <h3>Edit Mix Percentages</h3>
+    
+      <div class="input-grid">
+        <div class="input-group">
+          <label>Maize (%)</label>
+          <input type="number" id="ratio-maize" min="0" max="100" step="1" />
+        </div>
+        <div class="input-group">
+          <label>Oil Cakes (%)</label>
+          <input type="number" id="ratio-oilcakes" min="0" max="100" step="1" />
+        </div>
+        <div class="input-group">
+          <label>Bran (%)</label>
+          <input type="number" id="ratio-bran" min="0" max="100" step="1" />
+        </div>
+        <div class="input-group">
+          <label>Premix (%)</label>
+          <input type="number" id="ratio-premix" min="0" max="100" step="1" />
+        </div>
+        <div class="input-group">
+          <label>Limestone (%)</label>
+          <input type="number" id="ratio-limestone" min="0" max="100" step="1" />
+        </div>
+      </div>
+    
+      <p id="ratio-error" style="color:#b10000; font-weight:700; margin-top:10px;"></p>
+    
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        <button id="save-ratios-btn" class="calculate-btn" style="margin:0;">Save</button>
+        <button id="reset-ratios-btn" class="calculate-btn" style="background:#777; margin:0;">Reset</button>
+      </div>
+    </div>
+    
+
+    <!-- RESULTS SECTION -->
+    <div id="results" class="results-section hidden">
+      <h3>Results</h3>
+      
+      <div class="results-summary">
+        <div class="result-card">
+          <h4>Total Feed Cost</h4>
+          <p id="result-feed-cost">—</p>
+        </div>
+        <div class="result-card">
+          <h4>Total Overhead Cost</h4>
+          <p id="result-overhead-cost">—</p>
+        </div>
+        <div class="result-card">
+          <h4>Total Production Cost</h4>
+          <p id="result-total-cost">—</p>
+        </div>
+        <div class="result-card highlight">
+          <h4>Cost per Egg</h4>
+          <p id="result-cost-per-egg">—</p>
+        </div>
+        <div class="result-card highlight">
+          <h4>Cost per Tray (30 eggs)</h4>
+          <p id="result-cost-per-tray">—</p>
+        </div>
+      </div>
+
+      <div class="breakdown-section">
+        <h4>Ingredient Breakdown</h4>
+        <table class="breakdown-table">
+          <thead>
+            <tr>
+              <th>Ingredient</th>
+              <th>Ratio</th>
+              <th>Quantity (quintals)</th>
+              <th>Cost</th>
+            </tr>
+          </thead>
+          <tbody id="breakdown-body">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>© Farah Poultry Farm</footer>
+
+<script type="module" src="/js/egg-calculator.js"></script>
+<script type="module" src="/js/auth-ui.js"></script>
+
+<script>
+  const burger = document.getElementById("burger");
+  const nav = document.querySelector(".nav-right");
+
+  burger.addEventListener("click", () => {
+    nav.classList.toggle("show");
+  });
+</script>
+
+</body>
+</html>

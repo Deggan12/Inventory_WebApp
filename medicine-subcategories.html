@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Farah Poultry Farm</title>
+  <title>Medicine Subcategories - Farah Poultry Farm</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 
@@ -21,33 +21,38 @@
     <a href="index.html" class="nav-btn">Home</a>
     <a href="dashboard.html" class="nav-btn">Dashboard</a>
     <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
-  
-    <!-- Auth buttons -->
     <a href="login.html" class="nav-btn" id="login-btn">Login</a>
     <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
   </nav>
-  
 </header>
 
-<section class="hero">
-  <div class="hero-text">
-    <h2>Inventory Management System</h2>
-    <p>Track stock levels and manage inventory efficiently</p>
+<main class="content">
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> › 
+    <a href="medicine-categories.html">Medicine</a> › 
+    <span id="category-name">—</span>
   </div>
-</section>
 
-<main class="dashboard">
-  <div class="card" data-item="maize"><img src="/images/maize.jpg"><h3>Maize</h3></div>
-  <div class="card" data-item="bran"><img src="/images/bran.jpg"><h3>Bran</h3></div>
-  <div class="card" data-item="premix"><img src="/images/premix.jpg"><h3>Premix</h3></div>
-  <div class="card" data-item="oilcakes"><img src="/images/oilcakes.jpg"><h3>Oil Cakes</h3></div>
-  <div class="card" data-item="limestone"><img src="/images/limestone.jpg"><h3>Limestone</h3></div>
-  <div class="card" data-item="medicine"><img src="/images/medicine.jpg"><h3>Medicine</h3></div>
+  <h2 class="page-title" id="page-title">Subcategories</h2>
+
+  <!-- Add Subcategory Form (Admin Only) -->
+  <div id="add-subcategory-section" class="add-category-section hidden">
+    <form id="add-subcategory-form" class="add-category-form">
+      <input type="text" id="subcategory-name" placeholder="New subcategory name" required />
+      <input type="number" id="subcategory-minimum" placeholder="Minimum stock level" value="50" required />
+      <button type="submit">+ Add Subcategory</button>
+    </form>
+  </div>
+
+  <!-- Subcategories Grid -->
+  <div id="subcategories-grid" class="categories-grid">
+    <!-- Dynamically populated -->
+  </div>
 </main>
 
 <footer>© Farah Poultry Farm</footer>
 
-<script src="/js/view.js"></script>
+<script type="module" src="/js/medicine-subcategories.js"></script>
 <script type="module" src="/js/auth-ui.js"></script>
 
 <script>

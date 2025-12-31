@@ -55,14 +55,16 @@ async function setupAuthUI() {
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
       await supabase.auth.signOut();
-      window.location.href = "login.html";
+      // Force reload instead of just redirecting
+      window.location.replace("login.html");
     });
   }
 
   if (document.getElementById("m-logout-btn")) {
     document.getElementById("m-logout-btn").addEventListener("click", async () => {
       await supabase.auth.signOut();
-      window.location.href = "login.html";
+      // Force reload instead of just redirecting
+      window.location.replace("login.html");
     });
   }
 

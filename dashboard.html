@@ -20,7 +20,8 @@
   <nav class="nav-right">
     <a href="index.html" class="nav-btn">Home</a>
     <a href="dashboard.html" class="nav-btn">Dashboard</a>
-  
+    <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
+    
     <!-- Auth buttons -->
     <a href="login.html" class="nav-btn" id="login-btn">Login</a>
     <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
@@ -40,27 +41,6 @@
       <ul id="low-stock-list"></ul>
     </div>
 
-    <!-- STATS -->
-    <div class="stats">
-      <div class="stat-card">
-        <h4>Total Stock</h4>
-        <p>—</p>
-      </div>
-      <div class="stat-card">
-        <h4>Received Today</h4>
-        <p>—</p>
-      </div>
-      <div class="stat-card">
-        <h4>Dispatched Today</h4>
-        <p>—</p>
-      </div>
-      <div class="stat-card">
-        <h4>Lost</h4>
-        <p>—</p>
-      </div>
-    </div>
-
-  </div>
 
   <!-- ITEM STATUS GRID -->
 <div class="item-status-grid" id="item-status-grid"></div>
@@ -96,7 +76,6 @@
         <button class="toggle-btn" data-item="premix">Premix</button>
         <button class="toggle-btn" data-item="oilcakes">Oil Cakes</button>
         <button class="toggle-btn" data-item="limestone">Limestone</button>
-        <button class="toggle-btn" data-item="medicine">Medicine</button>
       </div>
 
       <canvas id="lineChart"></canvas>

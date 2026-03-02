@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Egg Tracker - Farah Poultry Farm</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="nav-left">
+    <img src="/images/logo_noBG.JPG" class="logo">
+    <h1>Farah Poultry Farm</h1>
+  </div>
+  <div class="burger" id="burger">☰</div>
+  <nav class="nav-right">
+    <a href="index.html" class="nav-btn">Home</a>
+    <a href="dashboard.html" class="nav-btn">Dashboard</a>
+    <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
+    <a href="egg-tracker.html" class="nav-btn">Egg Tracker</a>
+    <a href="login.html" class="nav-btn" id="login-btn">Login</a>
+    <button class="nav-btn" id="logout-btn">Logout</button>
+  </nav>
+</header>
+
+<main class="content">
+  <h2 class="page-title">Egg Production Tracker</h2>
+
+  <!-- MONTH NAVIGATION -->
+  <div class="month-nav">
+    <button class="month-arrow" id="prev-month">&#8592;</button>
+    <h2 id="month-label">—</h2>
+    <button class="month-arrow" id="next-month">&#8594;</button>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="tracker-summary">
+    <div class="tracker-stat">
+      <h4>Total Produced</h4>
+      <p id="sum-produced">—</p>
+      <span>eggs this month</span>
+    </div>
+    <div class="tracker-stat">
+      <h4>Total Sold</h4>
+      <p id="sum-sold">—</p>
+      <span>eggs this month</span>
+    </div>
+    <div class="tracker-stat">
+      <h4>Total Revenue</h4>
+      <p id="sum-revenue">—</p>
+      <span>this month</span>
+    </div>
+    <div class="tracker-stat">
+      <h4>Lost / Given Away</h4>
+      <p id="sum-lost">—</p>
+      <span>eggs this month</span>
+    </div>
+    <div class="tracker-stat">
+      <h4>Closing Stock</h4>
+      <p id="sum-stock">—</p>
+      <span>ending balance</span>
+    </div>
+  </div>
+
+  <!-- READ-ONLY NOTICE (shown when logged out) -->
+  <div class="tracker-auth-notice hidden" id="auth-gate">
+    🔒 Read-only mode. <a href="login.html">Log in</a> to add or delete entries.
+  </div>
+
+  <!-- ADD ENTRY FORM (admin only) -->
+  <div class="tracker-form-card hidden" id="entry-panel">
+    <h3>Add Entry</h3>
+
+    <div class="tracker-fields-row">
+      <div class="tracker-field">
+        <label>Date</label>
+        <input type="date" id="entry-date" />
+      </div>
+      <div class="tracker-field">
+        <label>Opening Balance (eggs)</label>
+        <input type="number" id="entry-opening" placeholder="Auto-filled" min="0" />
+        <span class="tracker-field-hint" id="opening-hint"></span>
+      </div>
+      <div class="tracker-field">
+        <label>Eggs Produced</label>
+        <input type="number" id="entry-produced" placeholder="0" min="0" />
+      </div>
+      <div class="tracker-field">
+        <label>Eggs Lost / Given Away</label>
+        <input type="number" id="entry-lost" placeholder="0" min="0" />
+      </div>
+    </div>
+
+    <!-- SALES -->
+    <p class="tracker-sales-label">Sales — add a row per price variation</p>
+    <div id="sales-container"></div>
+    <button class="tracker-add-sale-btn" id="add-sale-btn">+ Add Sale Row</button>
+
+    <!-- REMARKS -->
+    <div class="tracker-field" id="remarks-field">
+      <label>Remarks (optional)</label>
+      <textarea id="entry-remarks" placeholder="e.g. market sale, broken eggs noted…"></textarea>
+    </div>
+
+    <div class="tracker-form-actions">
+      <button class="tracker-submit-btn" id="save-entry-btn">Add Entry</button>
+      <span class="tracker-form-msg hidden" id="form-msg"></span>
+    </div>
+  </div>
+
+  <!-- PRODUCTION CHART -->
+  <div class="tracker-table-card">
+    <h3 id="chart-heading">Monthly Overview</h3>
+    <canvas id="egg-chart"></canvas>
+  </div>
+
+  <!-- ENTRIES TABLE -->
+  <div class="tracker-table-card">
+    <h3 id="table-heading">Entries</h3>
+    <table class="tracker-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Opening</th>
+          <th>Produced</th>
+          <th>Sold</th>
+          <th>Lost / Given</th>
+          <th>Ending</th>
+          <th>Revenue</th>
+          <th>Remarks</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="entries-tbody">
+        <tr><td colspan="9" class="tracker-no-entries">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer>© Farah Poultry Farm</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module" src="/js/egg-tracker.js"></script>
+<script type="module" src="/js/auth-ui.js"></script>
+<script>
+  document.getElementById("burger").addEventListener("click", () =>
+    document.querySelector(".nav-right").classList.toggle("show"));
+</script>
+</body>
+</html>

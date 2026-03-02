@@ -22,7 +22,6 @@ const tableBody = document.getElementById("table-body");
 const alertBox = document.getElementById("alert-box");
 
 /* INPUTS */
-const openingInput = document.getElementById("opening");
 const receivedInput = document.getElementById("received");
 const dispatchedInput = document.getElementById("dispatched");
 const lostInput = document.getElementById("lost");
@@ -45,8 +44,7 @@ const MIN_STOCK = {
 ================================ */
 async function checkAdmin() {
   console.log("Checking admin status...");
-  
-  // Get the session (not the user) - this is more reliable
+
   const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
   if (sessionError) {
@@ -68,7 +66,7 @@ async function checkAdmin() {
     .from("admins")
     .select("user_id")
     .eq("user_id", userId)
-    .maybeSingle(); // Use maybeSingle instead of single to avoid error if no rows
+    .maybeSingle();
 
   console.log("Admin query result:", { data, error });
 
@@ -94,18 +92,16 @@ async function checkAdmin() {
 function enableForm() {
   console.log("Enabling form...");
   if (!form) return;
-  
-  // Show the form
+
   form.style.display = "grid";
-  
-  // Remove any "view-only" messages
+
   const msgs = document.querySelectorAll(".content > p");
   msgs.forEach(msg => {
     if (msg.textContent.includes("view-only")) {
       msg.remove();
     }
   });
-  
+
   console.log("Form enabled!");
 }
 
@@ -116,18 +112,13 @@ function disableForm() {
   console.log("Disabling form...");
   if (!form) return;
 
-  // Hide the form
   form.style.display = "none";
 
-  // Check if message already exists
   const existingMsg = Array.from(document.querySelectorAll(".content > p"))
     .find(p => p.textContent.includes("view-only"));
-  
-  if (existingMsg) {
-    return;
-  }
 
-  // Add view-only message
+  if (existingMsg) return;
+
   const msg = document.createElement("p");
   msg.textContent = "This inventory is view-only.";
   msg.style.color = "#999";
@@ -146,25 +137,17 @@ async function loadEntries() {
     .from("items")
     .select("id, stock")
     .eq("name", item)
-    .maybeSingle(); // Use maybeSingle instead of single
+    .maybeSingle();
 
   if (itemError) {
     console.error("Error loading item:", itemError);
-    tableBody.innerHTML = `
-      <tr>
-        <td colspan="7">Error loading data. Please refresh the page.</td>
-      </tr>
-    `;
+    tableBody.innerHTML = `<tr><td colspan="7">Error loading data. Please refresh the page.</td></tr>`;
     return;
   }
 
   if (!itemRow) {
     console.error("Item not found:", item);
-    tableBody.innerHTML = `
-      <tr>
-        <td colspan="7">Item "${item}" not found in database</td>
-      </tr>
-    `;
+    tableBody.innerHTML = `<tr><td colspan="7">Item "${item}" not found in database</td></tr>`;
     return;
   }
 
@@ -180,11 +163,7 @@ async function loadEntries() {
   }
 
   if (!entries.length) {
-    tableBody.innerHTML = `
-      <tr>
-        <td colspan="7">No entries yet</td>
-      </tr>
-    `;
+    tableBody.innerHTML = `<tr><td colspan="7">No entries yet</td></tr>`;
     checkLowStock(itemRow.stock);
     return;
   }
@@ -204,19 +183,15 @@ form.addEventListener("submit", async e => {
     return;
   }
 
-  const opening = Number(openingInput.value);
   const received = Number(receivedInput.value);
   const dispatched = Number(dispatchedInput.value);
   const lost = Number(lostInput.value);
   const remarks = remarksInput.value;
 
-  const ending = opening + received - dispatched - lost;
-
-  console.log("Submitting entry:", { opening, received, dispatched, lost, ending });
-
+  // Always fetch current stock from DB to use as opening — never trust a form field
   const { data: itemRow, error: itemError } = await supabase
     .from("items")
-    .select("id")
+    .select("id, stock")
     .eq("name", item)
     .maybeSingle();
 
@@ -226,7 +201,24 @@ form.addEventListener("submit", async e => {
     return;
   }
 
-  const { data: entryData, error: insertError } = await supabase.from("entries").insert({
+  const opening = itemRow.stock; // current stock IS the opening balance
+  const ending = opening + received - dispatched - lost;
+
+  console.log("Submitting entry:", { opening, received, dispatched, lost, ending });
+
+  // VALIDATION: prevent negative stock
+  if (ending < 0) {
+    alert(`❌ Invalid entry: this would result in negative stock.\n\nCurrent stock: ${opening} kg\nAfter this entry: ${ending} kg\n\nPlease check your Dispatched and Lost values.`);
+    return;
+  }
+
+  // WARN if ending stock is zero
+  if (ending === 0) {
+    const confirmed = confirm(`⚠️ Warning: this entry will set stock to 0 kg.\n\nAre you sure you want to continue?`);
+    if (!confirmed) return;
+  }
+
+  const { error: insertError } = await supabase.from("entries").insert({
     item_id: itemRow.id,
     opening,
     received,
@@ -262,8 +254,7 @@ form.addEventListener("submit", async e => {
 ================================ */
 function addRow(entry) {
   const row = document.createElement("tr");
-  const ending =
-    entry.opening + entry.received - entry.dispatched - entry.lost;
+  const ending = entry.opening + entry.received - entry.dispatched - entry.lost;
 
   if (ending <= MIN_STOCK[item]) {
     row.classList.add("low-stock");
@@ -294,12 +285,12 @@ function checkLowStock(stock) {
 }
 
 /* ===============================
-   INIT - Wait a bit for auth to load
+   INIT
 ================================ */
 async function init() {
   // Small delay to let auth-ui.js set up the session
   await new Promise(resolve => setTimeout(resolve, 300));
-  
+
   await checkAdmin();
   await loadEntries();
 }

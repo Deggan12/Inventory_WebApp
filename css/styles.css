@@ -964,3 +964,393 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+/* =================================================
+   EGG TRACKER
+================================================= */
+
+/* Month navigation */
+.month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 28px 0 20px;
+}
+
+.month-nav h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+  min-width: 210px;
+  text-align: center;
+}
+
+.month-arrow {
+  background: white;
+  border: 2px solid #dd3326;
+  color: #dd3326;
+  font-size: 16px;
+  border-radius: 6px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.month-arrow:hover {
+  background: #dd3326;
+  color: white;
+}
+
+/* Summary cards row */
+.tracker-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.tracker-stat {
+  background: white;
+  border-radius: 14px;
+  padding: 18px 24px;
+  min-width: 145px;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.tracker-stat h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+
+.tracker-stat p {
+  font-size: 26px;
+  font-weight: 700;
+  color: #dd3326;
+  margin: 0;
+}
+
+.tracker-stat span {
+  font-size: 12px;
+  color: #bbb;
+}
+
+/* Auth notice for read-only visitors */
+.tracker-auth-notice {
+  background: #fff8e1;
+  border: 1.5px solid #f5a623;
+  border-radius: 10px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #7a5000;
+  font-weight: 600;
+}
+
+.tracker-auth-notice a {
+  color: #dd3326;
+  text-decoration: underline;
+}
+
+/* Entry form card */
+.tracker-form-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  margin-bottom: 24px;
+}
+
+.tracker-form-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 18px;
+}
+
+/* Field rows inside the form */
+.tracker-fields-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.tracker-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tracker-field label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tracker-field input,
+.tracker-field textarea {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  font-size: 14px;
+  font-family: "Inter", system-ui, sans-serif;
+  background: #fafafa;
+  transition: border-color 0.2s;
+}
+
+.tracker-field input:focus,
+.tracker-field textarea:focus {
+  outline: none;
+  border-color: #dd3326;
+  background: white;
+}
+
+.tracker-field textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.tracker-field-hint {
+  font-size: 11px;
+  color: #bbb;
+  margin-top: 2px;
+}
+
+/* Sales rows */
+.tracker-sales-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 4px 0 10px;
+}
+
+.tracker-sale-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 38px;
+  gap: 10px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.tracker-sale-row input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  font-size: 14px;
+  font-family: "Inter", system-ui, sans-serif;
+  background: #fafafa;
+  transition: border-color 0.2s;
+}
+
+.tracker-sale-row input:focus {
+  outline: none;
+  border-color: #dd3326;
+  background: white;
+}
+
+.tracker-remove-sale {
+  background: #fbe2df;
+  border: none;
+  color: #dd3326;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  height: 38px;
+  width: 38px;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.tracker-remove-sale:hover {
+  background: #dd3326;
+  color: white;
+}
+
+.tracker-add-sale-btn {
+  background: white;
+  border: 2px dashed #dd3326;
+  color: #dd3326;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+
+.tracker-add-sale-btn:hover {
+  background: #dd3326;
+  color: white;
+}
+
+/* Form action row */
+.tracker-form-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 18px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tracker-submit-btn {
+  padding: 10px 28px;
+  background: #dd3326;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.tracker-submit-btn:hover {
+  opacity: 0.9;
+}
+
+.tracker-submit-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.tracker-form-msg {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+}
+
+.tracker-form-msg.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.tracker-form-msg.error {
+  background: #fbe2df;
+  color: #b10000;
+}
+
+/* Entries table card */
+.tracker-table-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  margin-bottom: 40px;
+  overflow-x: auto;
+}
+
+.tracker-table-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 18px;
+}
+
+.tracker-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.tracker-table thead th {
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+  color: #222;
+  border-bottom: 2px solid #f0f0f0;
+  white-space: nowrap;
+}
+
+.tracker-table tbody td {
+  padding: 13px 14px;
+  border-bottom: 1px solid #fbe2df;
+  color: #dd3326;
+  font-weight: 600;
+}
+
+.tracker-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tracker-table tbody tr:hover td {
+  background: #fbe2df;
+}
+
+.tracker-table td.tracker-dim {
+  color: #999;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.tracker-no-entries {
+  text-align: center;
+  padding: 40px;
+  color: #bbb;
+  font-size: 15px;
+}
+
+.tracker-del-btn {
+  background: none;
+  border: none;
+  color: #ddd;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.tracker-del-btn:hover {
+  background: #fbe2df;
+  color: #dd3326;
+}
+
+@media (max-width: 768px) {
+  .tracker-fields-row {
+    grid-template-columns: 1fr;
+  }
+
+  .tracker-sale-row {
+    grid-template-columns: 1fr 1fr 38px;
+  }
+
+  .tracker-summary {
+    gap: 10px;
+  }
+
+  .tracker-stat {
+    min-width: 120px;
+    padding: 14px 16px;
+  }
+}
+
+/* EGG TRACKER - spacing fix between Add Sale Row btn and Remarks */
+.tracker-add-sale-btn {
+  margin-bottom: 18px;
+}
+
+/* EGG TRACKER - center table data under headers */
+.tracker-table thead th,
+.tracker-table tbody td {
+  text-align: center;
+}

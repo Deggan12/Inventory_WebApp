@@ -1,0 +1,93 @@
+
+<!-- saved from url=(0153)https://www.ohrc.on.ca/sites/default/files/media/html/wrktgthr/en/html5/lib/certificate/wrktgthr/en/printCertificate.html?print=Deggan%20Farah&2026-01-15 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<title>OHRC - Print Certificate</title>
+	<style type="text/css" media="print">
+	  @page { size: landscape; }
+		#bigText{
+		overflow:auto;
+		font-size:2.25rem;
+		font-family: Georgia, Serif;
+		font-weight: bold;
+		margin-top: 1.6875rem;
+		text-align: center;
+	}
+	.calligraphyRegular { font-family: kingthings_calligraphica_2Rg; }
+	.calligraphyLight { font-family: kingthings_calligraphica_2Lt; font-size: 106%; font-weight: bold; }
+	</style>
+</head>
+<body>
+	<script type="text/javascript">
+	
+		/*Get string from URL*/
+		var learner_info = window.location.href.split('?print=')[1];
+		
+		/*Split string into variables*/
+		var learner_name = learner_info.split('&')[0];
+		var cert_date = learner_info.split('&')[1];
+
+		/* Rounded border background-color:WhiteSmoke;width:960px;height:680px;padding:10px;border:10px outset gray; */ 
+		document.write('<div id="position" style="border: 4.0rem solid transparent;border-image: url(\'certificate-border-01.png\') 45 stretch; padding:1rem;">'); 
+		
+		/*Content*/
+		document.write('<div id="bigText" class="calligraphyRegular"><span class="calligraphyRegular">Certificate of Completion</span></div>');
+		document.write('<div id="smallText" class="italic"><span class="calligraphyLight">The Ontario Human Rights Commission</span><br><span class="georgia">affirms that</span></div>');
+		document.write('<div id="bigText">' + decodeURIComponent(learner_name) + '</div>');
+		document.write('<div id="smallText"><span class="italic georgia">has successfully completed</span></div>');
+		document.write('<div id="bigText" class="georgia">Working Together: <br> The Ontario Human Rights Code <br><span class="smallText georgia">and the</span><br>Accessibility for Ontarians with Disabilities Act</div>');
+		document.write('<div id="smallText">' + unescape(cert_date) + '</div>');
+		document.write('</div>');
+
+		/*Send print request to browser if possible*/
+		window.onload = function() { window.print(); }
+
+	</script><div id="position" style="border: 4.0rem solid transparent;border-image: url(&#39;certificate-border-01.png&#39;) 45 stretch; padding:1rem;"><div id="bigText" class="calligraphyRegular"><span class="calligraphyRegular">Certificate of Completion</span></div><div id="smallText" class="italic"><span class="calligraphyLight">The Ontario Human Rights Commission</span><br><span class="georgia">affirms that</span></div><div id="bigText">Deggan Farah</div><div id="smallText"><span class="italic georgia">has successfully completed</span></div><div id="bigText" class="georgia">Working Together: <br> The Ontario Human Rights Code <br><span class="smallText georgia">and the</span><br>Accessibility for Ontarians with Disabilities Act</div><div id="smallText">2026-01-15</div></div>
+	<style type="text/css">
+	  @page { size: landscape; }
+		@font-face {
+			font-family: 'kingthings_calligraphica_2Rg';
+			src: url('Kingthings_Calligraphica_2-webfont.woff') format('woff');
+			font-weight: normal;
+			font-style: normal;
+
+		}
+		@font-face {
+			font-family: 'kingthings_calligraphica_2Lt';
+			src: url('Kingthings_Calligraphica_Light-webfont.woff') format('woff');
+			font-weight: normal;
+			font-style: normal;
+
+		}
+		.calligraphyRegular { font-family: kingthings_calligraphica_2Rg;
+							font-size: 150%;  }
+		.calligraphyLight { font-family: kingthings_calligraphica_2Lt, sans-serif; 
+							font-size: 150%; 
+							font-style: normal;
+							font-weight: bold; }
+		#bigText{
+			overflow:auto;
+			font-size:2.25rem;
+			font-family: Georgia, serif;
+			font-weight: bold;
+			margin-top: 1.6875rem;
+			text-align: center;
+		}
+		
+		#smallText, .smallText{
+			overflow:auto;
+			font-size:1.125rem;
+			font-family: sans-serif;
+			margin-top: 1.6875rem;
+			text-align: center;
+		}
+		#position{
+			display: table-cell;
+			vertical-align: middle;
+		}
+		.georgia { font-family: Georgia, serif; }
+		.italic { font-style: italic; }
+	</style>
+
+
+</body></html>

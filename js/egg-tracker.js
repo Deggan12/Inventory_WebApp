@@ -126,7 +126,7 @@ function renderTable() {
   const tbody = document.getElementById("entries-tbody");
 
   if (!monthEntries.length) {
-    tbody.innerHTML = `<tr><td colspan="9" class="tracker-no-entries">No entries for this month yet.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="tracker-no-entries">No entries for this month yet.</td></tr>`;
     return;
   }
 
@@ -140,25 +140,9 @@ function renderTable() {
       <td>${r.closing_balance ?? 0}</td>
       <td>${fmtCurrency(r.revenue || 0)}</td>
       <td class="tracker-dim">${r.remarks || "—"}</td>
-      <td>${isAdmin
-        ? `<button class="tracker-del-btn" data-id="${r.id}" title="Delete">✕</button>`
-        : ""}</td>
+      <td></td>
     </tr>
   `).join("");
-
-  if (isAdmin) {
-    tbody.querySelectorAll(".tracker-del-btn").forEach(btn =>
-      btn.addEventListener("click", async () => {
-        if (!confirm("Delete this entry?")) return;
-        const { error } = await supabase
-          .from("egg_entries")
-          .delete()
-          .eq("id", btn.dataset.id);
-        if (!error) loadMonth();
-        else alert("Error: " + error.message);
-      })
-    );
-  }
 }
 
 let chartInstance = null;

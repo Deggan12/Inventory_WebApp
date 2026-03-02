@@ -1,6 +1,23 @@
 // js/auth-ui.js
 import { supabase } from "./supabase.js";
 
+/* ===============================
+   AUTH GUARD
+   Redirects to login if not logged in.
+   Pages with <body data-public="true"> are exempt (i.e. login.html).
+================================ */
+async function authGuard() {
+  const isPublicPage = document.body.dataset.public === "true";
+  if (isPublicPage) return;
+
+  const { data } = await supabase.auth.getSession();
+  if (!data.session) {
+    window.location.replace("login.html");
+  }
+}
+
+await authGuard();
+
 async function setupAuthUI() {
   const loginBtn = document.getElementById("login-btn");
   const logoutBtn = document.getElementById("logout-btn");

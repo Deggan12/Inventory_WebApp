@@ -3,6 +3,12 @@ import { supabase } from "./supabase.js";
 const form = document.getElementById("login-form");
 const errorEl = document.getElementById("error");
 
+// If already logged in, skip the login page entirely
+const { data } = await supabase.auth.getSession();
+if (data.session) {
+  window.location.replace("index.html");
+}
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -17,6 +23,6 @@ form.addEventListener("submit", async (e) => {
   if (error) {
     errorEl.textContent = error.message;
   } else {
-    window.location.href = "dashboard.html";
+    window.location.replace("index.html");
   }
 });

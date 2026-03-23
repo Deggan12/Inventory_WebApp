@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 
-<body>
+<body data-public="true">
 
 <header class="top-bar">
   <div class="nav-left">
@@ -18,66 +18,54 @@
   <div class="burger" id="burger">☰</div>
 
   <nav class="nav-right">
-        <a href="index.html" class="nav-btn">Home</a>
+    <a href="index.html" class="nav-btn">Home</a>
     <a href="dashboard.html" class="nav-btn">Dashboard</a>
     <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
-    <a href="egg-tracker.html" class="nav-btn">Egg Tracker</a>
+    <a href="egg-tracker.html" class="nav-btn admin-only" style="display:none;">Egg Tracker</a>
     <a href="login.html" class="nav-btn" id="login-btn">Login</a>
     <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
   </nav>
-  
 </header>
 
 <section class="dashboard-panels">
 
-  <!-- TOP AREA -->
   <div class="dashboard-top">
 
-    <!-- LOW STOCK ALERT -->
     <div id="low-stock-panel" class="low-stock-panel hidden">
       <h4>⚠️ Low Stock Alert</h4>
       <p id="low-stock-count"></p>
       <ul id="low-stock-list"></ul>
     </div>
 
+    <div class="item-status-grid" id="item-status-grid"></div>
 
-  <!-- ITEM STATUS GRID -->
-<div class="item-status-grid" id="item-status-grid"></div>
+    <div class="charts">
 
-
-  <!-- CHARTS GRID -->
-  <div class="charts">
-
-    <!-- BAR CHART -->
-    <div class="chart-card">
-      <h4>Stock Movement</h4>
-      <canvas id="barChart"></canvas>
-    </div>
-
-    <!-- DOUGHNUT CHART -->
-    <div class="chart-card">
-      <h4>Stock Distribution</h4>
-      <canvas id="doughnutChart"></canvas>
-    </div>
-
-    <!-- LINE CHART (FULL WIDTH) -->
-    <div class="chart-card full">
-      <h4>Monthly Usage</h4>
-      <p style="font-weight:600; margin-bottom:8px; color:#666;">
-        Select item:
-      </p>
-      
-
-      <!-- ITEM TOGGLES -->
-      <div id="item-toggles" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
-        <button class="toggle-btn active" data-item="maize">Maize</button>
-        <button class="toggle-btn" data-item="bran">Bran</button>
-        <button class="toggle-btn" data-item="premix">Premix</button>
-        <button class="toggle-btn" data-item="oilcakes">Oil Cakes</button>
-        <button class="toggle-btn" data-item="limestone">Limestone</button>
+      <div class="chart-card">
+        <h4>Stock Movement</h4>
+        <canvas id="barChart"></canvas>
       </div>
 
-      <canvas id="lineChart"></canvas>
+      <div class="chart-card">
+        <h4>Stock Distribution</h4>
+        <canvas id="doughnutChart"></canvas>
+      </div>
+
+      <div class="chart-card full">
+        <h4>Monthly Usage</h4>
+        <p style="font-weight:600; margin-bottom:8px; color:#666;">Select item:</p>
+
+        <div id="item-toggles" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+          <button class="toggle-btn active" data-item="maize">Maize</button>
+          <button class="toggle-btn" data-item="bran">Bran</button>
+          <button class="toggle-btn" data-item="premix">Premix</button>
+          <button class="toggle-btn" data-item="oilcakes">Oil Cakes</button>
+          <button class="toggle-btn" data-item="limestone">Limestone</button>
+        </div>
+
+        <canvas id="lineChart"></canvas>
+      </div>
+
     </div>
 
   </div>
@@ -93,12 +81,8 @@
 <script>
   const burger = document.getElementById("burger");
   const nav = document.querySelector(".nav-right");
-
-  burger.addEventListener("click", () => {
-    nav.classList.toggle("show");
-  });
+  burger.addEventListener("click", () => nav.classList.toggle("show"));
 </script>
-
 
 </body>
 </html>

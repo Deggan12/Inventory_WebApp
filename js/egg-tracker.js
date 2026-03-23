@@ -1,17 +1,11 @@
 // js/egg-tracker.js
 import { supabase } from "./supabase.js";
 
-/* ─────────────────────────────────────
-   STATE
-───────────────────────────────────── */
 let isAdmin      = false;
 let currentYear  = new Date().getFullYear();
-let currentMonth = new Date().getMonth(); // 0-indexed
+let currentMonth = new Date().getMonth();
 let monthEntries = [];
 
-/* ─────────────────────────────────────
-   INIT
-───────────────────────────────────── */
 async function init() {
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -24,14 +18,23 @@ async function init() {
     isAdmin = !!adminRow;
   }
 
-  // Show/hide form vs auth notice using the existing .hidden class
-  if (isAdmin) {
-    document.getElementById("entry-panel").classList.remove("hidden");
-  } else {
-    document.getElementById("auth-gate").classList.remove("hidden");
+  // Redirect non-admins away entirely
+  if (!isAdmin) {
+    document.querySelector("main.content").innerHTML = `
+      <div style="text-align:center; padding:80px 20px;">
+        <h2 style="font-size:2rem; margin-bottom:16px;">🔒 Access Denied</h2>
+        <p style="color:#666; font-size:1.1rem; margin-bottom:24px;">
+          You need to be logged in as an admin to view the Egg Tracker.
+        </p>
+        <a href="login.html" style="background:#DD3326; color:white; padding:12px 28px; border-radius:8px; text-decoration:none; font-weight:600;">
+          Log In
+        </a>
+      </div>
+    `;
+    return;
   }
 
-  // Hide logout btn by default (auth-ui.js handles it, but just in case)
+  document.getElementById("entry-panel").classList.remove("hidden");
   document.getElementById("logout-btn").classList.add("hidden");
 
   setupMonthNav();
@@ -41,9 +44,6 @@ async function init() {
   await loadMonth();
 }
 
-/* ─────────────────────────────────────
-   MONTH NAVIGATION
-───────────────────────────────────── */
 function setupMonthNav() {
   document.getElementById("prev-month").addEventListener("click", () => {
     currentMonth--;
@@ -62,9 +62,6 @@ function monthLabel() {
     .toLocaleString("default", { month: "long", year: "numeric" });
 }
 
-/* ─────────────────────────────────────
-   LOAD MONTH
-───────────────────────────────────── */
 async function loadMonth() {
   document.getElementById("month-label").textContent   = monthLabel();
   document.getElementById("table-heading").textContent = `Entries — ${monthLabel()}`;
@@ -89,15 +86,10 @@ async function loadMonth() {
   renderTable();
   renderChart();
 
-  if (isAdmin) {
-    await prefillOpening();
-    setDefaultDate();
-  }
+  await prefillOpening();
+  setDefaultDate();
 }
 
-/* ─────────────────────────────────────
-   SUMMARY CARDS
-───────────────────────────────────── */
 function renderSummary() {
   let produced = 0, sold = 0, revenue = 0, lost = 0;
 
@@ -119,9 +111,6 @@ function renderSummary() {
     stock === "—" ? "—" : Number(stock).toLocaleString();
 }
 
-/* ─────────────────────────────────────
-   TABLE
-───────────────────────────────────── */
 function renderTable() {
   const tbody = document.getElementById("entries-tbody");
 
@@ -147,9 +136,6 @@ function renderTable() {
 
 let chartInstance = null;
 
-/* ─────────────────────────────────────
-   CHART
-───────────────────────────────────── */
 function renderChart() {
   document.getElementById("chart-heading").textContent = `Monthly Overview — ${monthLabel()}`;
 
@@ -166,24 +152,9 @@ function renderChart() {
     data: {
       labels,
       datasets: [
-        {
-          label: "Produced",
-          data: produced,
-          backgroundColor: "#dd3326",
-          borderRadius: 6
-        },
-        {
-          label: "Sold",
-          data: sold,
-          backgroundColor: "#F77F00",
-          borderRadius: 6
-        },
-        {
-          label: "Lost / Given",
-          data: lost,
-          backgroundColor: "#FCBF49",
-          borderRadius: 6
-        },
+        { label: "Produced", data: produced, backgroundColor: "#dd3326", borderRadius: 6 },
+        { label: "Sold", data: sold, backgroundColor: "#F77F00", borderRadius: 6 },
+        { label: "Lost / Given", data: lost, backgroundColor: "#FCBF49", borderRadius: 6 },
         {
           label: "Closing Stock",
           data: stock,
@@ -202,25 +173,16 @@ function renderChart() {
     options: {
       responsive: true,
       interaction: { mode: "index", intersect: false },
-      plugins: {
-        legend: { position: "bottom" }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { precision: 0 }
-        }
-      }
+      plugins: { legend: { position: "bottom" } },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
     }
   });
 }
-
 
 async function prefillOpening() {
   const input = document.getElementById("entry-opening");
   const hint  = document.getElementById("opening-hint");
 
-  // Use last closing balance in current month if entries exist
   if (monthEntries.length > 0) {
     const last = monthEntries[monthEntries.length - 1];
     const val  = last.closing_balance ?? 0;
@@ -230,7 +192,6 @@ async function prefillOpening() {
     return;
   }
 
-  // Otherwise look at most recent past entry
   const mm = String(currentMonth + 1).padStart(2, "0");
   const { data } = await supabase
     .from("egg_entries")
@@ -262,9 +223,6 @@ function setDefaultDate() {
   }
 }
 
-/* ─────────────────────────────────────
-   SALE ROWS
-───────────────────────────────────── */
 function setupSaleRows() {
   addSaleRow();
   document.getElementById("add-sale-btn").addEventListener("click", addSaleRow);
@@ -296,9 +254,6 @@ function collectSales() {
   return { totalSold, totalRevenue };
 }
 
-/* ─────────────────────────────────────
-   SAVE ENTRY
-───────────────────────────────────── */
 async function saveEntry() {
   const btn      = document.getElementById("save-entry-btn");
   const date     = document.getElementById("entry-date").value;
@@ -306,7 +261,6 @@ async function saveEntry() {
   const lost     = parseInt(document.getElementById("entry-lost").value)     || 0;
   const remarks  = document.getElementById("entry-remarks").value.trim();
 
-  // Opening: typed value or fall back to placeholder number
   const openingInput = document.getElementById("entry-opening");
   const opening = openingInput.value !== ""
     ? parseInt(openingInput.value)
@@ -335,15 +289,10 @@ async function saveEntry() {
 
   btn.disabled = false;
 
-  if (error) {
-    console.error(error);
-    showMsg("Error: " + error.message, "error");
-    return;
-  }
+  if (error) { console.error(error); showMsg("Error: " + error.message, "error"); return; }
 
   showMsg("Entry saved ✓", "success");
 
-  // Reset form
   document.getElementById("entry-produced").value = "";
   document.getElementById("entry-opening").value  = "";
   document.getElementById("entry-lost").value     = "";
@@ -354,9 +303,6 @@ async function saveEntry() {
   await loadMonth();
 }
 
-/* ─────────────────────────────────────
-   HELPERS
-───────────────────────────────────── */
 function showMsg(text, type) {
   const el = document.getElementById("form-msg");
   el.textContent = text;
@@ -375,7 +321,4 @@ function fmtDate(dateStr) {
   return `${parseInt(d)}/${parseInt(m)}/${y}`;
 }
 
-/* ─────────────────────────────────────
-   START
-───────────────────────────────────── */
 init();

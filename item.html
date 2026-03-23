@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 
-<body>
+<body data-public="true">
 
 <header class="top-bar">
   <div class="nav-left">
@@ -18,10 +18,10 @@
   <div class="burger" id="burger">☰</div>
 
   <nav class="nav-right" id="nav-menu">
-        <a href="index.html" class="nav-btn">Home</a>
+    <a href="index.html" class="nav-btn">Home</a>
     <a href="dashboard.html" class="nav-btn">Dashboard</a>
     <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
-    <a href="egg-tracker.html" class="nav-btn">Egg Tracker</a>
+    <a href="egg-tracker.html" class="nav-btn admin-only" style="display:none;">Egg Tracker</a>
     <a href="login.html" class="nav-btn" id="login-btn">Login</a>
     <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
   </nav>
@@ -34,7 +34,6 @@
     ⚠️ Low stock alert: this item is below the minimum level.
   </div>
 
-  <!-- ENTRY FORM (HIDDEN BY AUTH SCRIPT WHEN LOGGED OUT) -->
   <form id="entry-form" class="entry-form">
     <input type="number" id="received" placeholder="Received (kg)" required />
     <input type="number" id="dispatched" placeholder="Dispatched (kg)" required />
@@ -43,7 +42,6 @@
     <button type="submit">Add Entry</button>
   </form>
 
-  <!-- TABLE -->
   <div class="table-container">
     <table class="modern-table">
       <thead>
@@ -70,10 +68,7 @@
 <script>
   const burger = document.getElementById("burger");
   const nav = document.querySelector(".nav-right");
-
-  burger.addEventListener("click", () => {
-    nav.classList.toggle("show");
-  });
+  burger.addEventListener("click", () => nav.classList.toggle("show"));
 </script>
 
 </body>

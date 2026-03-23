@@ -1,23 +1,6 @@
 // js/auth-ui.js
 import { supabase } from "./supabase.js";
 
-/* ===============================
-   AUTH GUARD
-   Redirects to login if not logged in.
-   Pages with <body data-public="true"> are exempt (i.e. login.html).
-================================ */
-async function authGuard() {
-  const isPublicPage = document.body.dataset.public === "true";
-  if (isPublicPage) return;
-
-  const { data } = await supabase.auth.getSession();
-  if (!data.session) {
-    window.location.replace("login.html");
-  }
-}
-
-await authGuard();
-
 async function setupAuthUI() {
   const loginBtn = document.getElementById("login-btn");
   const logoutBtn = document.getElementById("logout-btn");
@@ -25,7 +8,6 @@ async function setupAuthUI() {
   const entryForm = document.getElementById("entry-form");
   const loginHint = document.getElementById("login-hint");
 
-  // Mobile menu elements (optional per page)
   const burgerBtn = document.getElementById("burger-btn");
   const mobileMenu = document.getElementById("mobile-menu");
 
@@ -38,12 +20,10 @@ async function setupAuthUI() {
       mobileMenu.classList.toggle("open");
     });
 
-    // Close menu when user clicks a link inside it
     mobileMenu.addEventListener("click", (e) => {
       if (e.target.tagName === "A" || e.target.tagName === "BUTTON") closeMobileMenu();
     });
 
-    // Close on resize back to desktop
     window.addEventListener("resize", () => {
       if (window.innerWidth > 768) closeMobileMenu();
     });
@@ -52,6 +32,17 @@ async function setupAuthUI() {
   async function applyUIFromSession() {
     const { data } = await supabase.auth.getSession();
     const isLoggedIn = !!data.session;
+
+    // Check admin status
+    let isAdmin = false;
+    if (isLoggedIn) {
+      const { data: adminRow } = await supabase
+        .from("admins")
+        .select("user_id")
+        .eq("user_id", data.session.user.id)
+        .maybeSingle();
+      isAdmin = !!adminRow;
+    }
 
     // Top nav buttons
     if (loginBtn) loginBtn.style.display = isLoggedIn ? "none" : "inline-flex";
@@ -64,15 +55,18 @@ async function setupAuthUI() {
     // Mobile menu buttons (if present)
     const mLogin = document.getElementById("m-login-btn");
     const mLogout = document.getElementById("m-logout-btn");
-
     if (mLogin) mLogin.style.display = isLoggedIn ? "none" : "block";
     if (mLogout) mLogout.style.display = isLoggedIn ? "block" : "none";
+
+    // Egg Tracker nav link — admin only
+    document.querySelectorAll(".admin-only").forEach(el => {
+      el.style.display = isAdmin ? "inline-flex" : "none";
+    });
   }
 
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
       await supabase.auth.signOut();
-      // Force reload instead of just redirecting
       window.location.replace("login.html");
     });
   }
@@ -80,7 +74,6 @@ async function setupAuthUI() {
   if (document.getElementById("m-logout-btn")) {
     document.getElementById("m-logout-btn").addEventListener("click", async () => {
       await supabase.auth.signOut();
-      // Force reload instead of just redirecting
       window.location.replace("login.html");
     });
   }

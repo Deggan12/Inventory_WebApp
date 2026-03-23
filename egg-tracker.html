@@ -6,7 +6,7 @@
   <title>Egg Tracker - Farah Poultry Farm</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
-<body>
+<body data-public="true">
 
 <header class="top-bar">
   <div class="nav-left">
@@ -18,7 +18,7 @@
     <a href="index.html" class="nav-btn">Home</a>
     <a href="dashboard.html" class="nav-btn">Dashboard</a>
     <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
-    <a href="egg-tracker.html" class="nav-btn">Egg Tracker</a>
+    <a href="egg-tracker.html" class="nav-btn admin-only" style="display:none;">Egg Tracker</a>
     <a href="login.html" class="nav-btn" id="login-btn">Login</a>
     <button class="nav-btn" id="logout-btn">Logout</button>
   </nav>
@@ -27,14 +27,12 @@
 <main class="content">
   <h2 class="page-title">Egg Production Tracker</h2>
 
-  <!-- MONTH NAVIGATION -->
   <div class="month-nav">
     <button class="month-arrow" id="prev-month">&#8592;</button>
     <h2 id="month-label">—</h2>
     <button class="month-arrow" id="next-month">&#8594;</button>
   </div>
 
-  <!-- SUMMARY CARDS -->
   <div class="tracker-summary">
     <div class="tracker-stat">
       <h4>Total Produced</h4>
@@ -63,12 +61,10 @@
     </div>
   </div>
 
-  <!-- READ-ONLY NOTICE (shown when logged out) -->
   <div class="tracker-auth-notice hidden" id="auth-gate">
     🔒 Read-only mode. <a href="login.html">Log in</a> to add or delete entries.
   </div>
 
-  <!-- ADD ENTRY FORM (admin only) -->
   <div class="tracker-form-card hidden" id="entry-panel">
     <h3>Add Entry</h3>
 
@@ -92,12 +88,10 @@
       </div>
     </div>
 
-    <!-- SALES -->
     <p class="tracker-sales-label">Sales — add a row per price variation</p>
     <div id="sales-container"></div>
     <button class="tracker-add-sale-btn" id="add-sale-btn">+ Add Sale Row</button>
 
-    <!-- REMARKS -->
     <div class="tracker-field" id="remarks-field">
       <label>Remarks (optional)</label>
       <textarea id="entry-remarks" placeholder="e.g. market sale, broken eggs noted…"></textarea>
@@ -109,13 +103,11 @@
     </div>
   </div>
 
-  <!-- PRODUCTION CHART -->
   <div class="tracker-table-card">
     <h3 id="chart-heading">Monthly Overview</h3>
     <canvas id="egg-chart"></canvas>
   </div>
 
-  <!-- ENTRIES TABLE -->
   <div class="tracker-table-card">
     <h3 id="table-heading">Entries</h3>
     <table class="tracker-table">

@@ -38,13 +38,14 @@ async function checkAdmin() {
     return;
   }
 
-  const { data } = await supabase
-    .from("admins")
-    .select("user_id")
-    .eq("user_id", session.user.id)
-    .maybeSingle();
+  const userId = session.user.id;
 
-  if (data) {
+  const [{ data: adminRow }, { data: employeeRow }] = await Promise.all([
+    supabase.from("admins").select("user_id").eq("user_id", userId).maybeSingle(),
+    supabase.from("employees").select("user_id").eq("user_id", userId).maybeSingle()
+  ]);
+
+  if (adminRow || employeeRow) {
     isAdmin = true;
     enableForm();
   } else {
@@ -69,15 +70,12 @@ async function loadSubcategory() {
   subcategory = data;
   medicineItemId = data.item_id;
 
-  // Extract category from name (e.g., "vitamins-B12" -> "vitamins")
   const nameParts = data.name.split("-");
   const category = nameParts[0];
   const displayName = nameParts.slice(1).join("-");
 
-  // Update page title
   document.getElementById("item-title").textContent = `${displayName} Inventory`;
 
-  // Update breadcrumb
   const categoryNames = {
     "vitamins": "Vitamins",
     "vaccine": "Vaccine",
@@ -111,11 +109,7 @@ async function loadEntries() {
   }
 
   if (!entries.length) {
-    tableBody.innerHTML = `
-      <tr>
-        <td colspan="7">No entries yet</td>
-      </tr>
-    `;
+    tableBody.innerHTML = `<tr><td colspan="7">No entries yet</td></tr>`;
     return;
   }
 
@@ -128,9 +122,7 @@ function enableForm() {
 
   const msgs = document.querySelectorAll(".content > p");
   msgs.forEach(msg => {
-    if (msg.textContent.includes("view-only")) {
-      msg.remove();
-    }
+    if (msg.textContent.includes("view-only")) msg.remove();
   });
 }
 

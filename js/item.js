@@ -1,35 +1,22 @@
 import { supabase } from "./supabase.js";
 
-/* ===============================
-   GLOBALS
-================================ */
 let isAdmin = false;
 
-/* ===============================
-   GET ITEM FROM URL
-================================ */
 const params = new URLSearchParams(window.location.search);
 const item = params.get("item");
 
 document.getElementById("item-title").textContent =
   item.charAt(0).toUpperCase() + item.slice(1) + " Inventory";
 
-/* ===============================
-   ELEMENT REFERENCES
-================================ */
 const form = document.getElementById("entry-form");
 const tableBody = document.getElementById("table-body");
 const alertBox = document.getElementById("alert-box");
 
-/* INPUTS */
 const receivedInput = document.getElementById("received");
 const dispatchedInput = document.getElementById("dispatched");
 const lostInput = document.getElementById("lost");
 const remarksInput = document.getElementById("remarks");
 
-/* ===============================
-   MINIMUM STOCK LEVELS
-================================ */
 const MIN_STOCK = {
   maize: 500,
   bran: 400,
@@ -39,79 +26,41 @@ const MIN_STOCK = {
   medicine: 100
 };
 
-/* ===============================
-   ADMIN CHECK
-================================ */
 async function checkAdmin() {
-  console.log("Checking admin status...");
-
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-  if (sessionError) {
-    console.error("Error getting session:", sessionError);
-    disableForm();
-    return;
-  }
+  const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {
-    console.log("No session found - user not logged in");
     disableForm();
     return;
   }
 
   const userId = session.user.id;
-  console.log("User ID from session:", userId);
 
-  const { data, error } = await supabase
-    .from("admins")
-    .select("user_id")
-    .eq("user_id", userId)
-    .maybeSingle();
+  const [{ data: adminRow }, { data: employeeRow }] = await Promise.all([
+    supabase.from("admins").select("user_id").eq("user_id", userId).maybeSingle(),
+    supabase.from("employees").select("user_id").eq("user_id", userId).maybeSingle()
+  ]);
 
-  console.log("Admin query result:", { data, error });
-
-  if (error) {
-    console.error("Error checking admin:", error);
-    disableForm();
-    return;
-  }
-
-  if (data) {
-    console.log("User IS an admin!");
+  if (adminRow || employeeRow) {
     isAdmin = true;
     enableForm();
   } else {
-    console.log("User is NOT an admin");
     disableForm();
   }
 }
 
-/* ===============================
-   ENABLE FORM (FOR ADMINS)
-================================ */
 function enableForm() {
-  console.log("Enabling form...");
   if (!form) return;
-
   form.style.display = "grid";
 
   const msgs = document.querySelectorAll(".content > p");
   msgs.forEach(msg => {
-    if (msg.textContent.includes("view-only")) {
-      msg.remove();
-    }
+    if (msg.textContent.includes("view-only")) msg.remove();
   });
-
-  console.log("Form enabled!");
 }
 
-/* ===============================
-   DISABLE FORM (READ ONLY)
-================================ */
 function disableForm() {
-  console.log("Disabling form...");
   if (!form) return;
-
   form.style.display = "none";
 
   const existingMsg = Array.from(document.querySelectorAll(".content > p"))
@@ -127,9 +76,6 @@ function disableForm() {
   form.parentNode.insertBefore(msg, form);
 }
 
-/* ===============================
-   LOAD ENTRIES (PUBLIC)
-================================ */
 async function loadEntries() {
   tableBody.innerHTML = "";
 
@@ -172,9 +118,6 @@ async function loadEntries() {
   checkLowStock(itemRow.stock);
 }
 
-/* ===============================
-   FORM SUBMIT (ADMIN ONLY)
-================================ */
 form.addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -188,7 +131,6 @@ form.addEventListener("submit", async e => {
   const lost = Number(lostInput.value);
   const remarks = remarksInput.value;
 
-  // Always fetch current stock from DB to use as opening — never trust a form field
   const { data: itemRow, error: itemError } = await supabase
     .from("items")
     .select("id, stock")
@@ -201,18 +143,14 @@ form.addEventListener("submit", async e => {
     return;
   }
 
-  const opening = itemRow.stock; // current stock IS the opening balance
+  const opening = itemRow.stock;
   const ending = opening + received - dispatched - lost;
 
-  console.log("Submitting entry:", { opening, received, dispatched, lost, ending });
-
-  // VALIDATION: prevent negative stock
   if (ending < 0) {
     alert(`❌ Invalid entry: this would result in negative stock.\n\nCurrent stock: ${opening} kg\nAfter this entry: ${ending} kg\n\nPlease check your Dispatched and Lost values.`);
     return;
   }
 
-  // WARN if ending stock is zero
   if (ending === 0) {
     const confirmed = confirm(`⚠️ Warning: this entry will set stock to 0 kg.\n\nAre you sure you want to continue?`);
     if (!confirmed) return;
@@ -244,14 +182,10 @@ form.addEventListener("submit", async e => {
     return;
   }
 
-  console.log("Entry added successfully!");
   form.reset();
   loadEntries();
 });
 
-/* ===============================
-   ADD TABLE ROW
-================================ */
 function addRow(entry) {
   const row = document.createElement("tr");
   const ending = entry.opening + entry.received - entry.dispatched - entry.lost;
@@ -273,9 +207,6 @@ function addRow(entry) {
   tableBody.appendChild(row);
 }
 
-/* ===============================
-   LOW STOCK ALERT
-================================ */
 function checkLowStock(stock) {
   if (stock <= MIN_STOCK[item]) {
     alertBox.classList.remove("hidden");
@@ -284,13 +215,8 @@ function checkLowStock(stock) {
   }
 }
 
-/* ===============================
-   INIT
-================================ */
 async function init() {
-  // Small delay to let auth-ui.js set up the session
   await new Promise(resolve => setTimeout(resolve, 300));
-
   await checkAdmin();
   await loadEntries();
 }

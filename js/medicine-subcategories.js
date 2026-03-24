@@ -34,16 +34,17 @@ async function init() {
 
 async function checkAdmin() {
   const { data: { session } } = await supabase.auth.getSession();
-  
+
   if (!session) return;
 
-  const { data } = await supabase
-    .from("admins")
-    .select("user_id")
-    .eq("user_id", session.user.id)
-    .maybeSingle();
+  const userId = session.user.id;
 
-  if (data) {
+  const [{ data: adminRow }, { data: employeeRow }] = await Promise.all([
+    supabase.from("admins").select("user_id").eq("user_id", userId).maybeSingle(),
+    supabase.from("employees").select("user_id").eq("user_id", userId).maybeSingle()
+  ]);
+
+  if (adminRow || employeeRow) {
     isAdmin = true;
     document.getElementById("add-subcategory-section").classList.remove("hidden");
   }
@@ -78,8 +79,7 @@ async function loadSubcategories() {
     return;
   }
 
-  // Filter by category prefix
-  const filtered = subcategories.filter(sub => 
+  const filtered = subcategories.filter(sub =>
     sub.name.toLowerCase().startsWith(category)
   );
 
@@ -104,7 +104,6 @@ function displaySubcategories(subcategories) {
     card.className = "category-card subcategory-card";
     card.dataset.subcategoryId = sub.id;
 
-    // Remove category prefix from display name
     const displayName = sub.name.replace(new RegExp(`^${category}-`, 'i'), '');
 
     card.innerHTML = `
@@ -130,14 +129,12 @@ function displaySubcategories(subcategories) {
 
 function setupAddSubcategoryForm() {
   const form = document.getElementById("add-subcategory-form");
-  
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const name = document.getElementById("subcategory-name").value.trim();
     const minimum = parseInt(document.getElementById("subcategory-minimum").value) || 50;
-
-    // Add category prefix to name
     const fullName = `${category}-${name}`;
 
     const { error } = await supabase
@@ -160,7 +157,6 @@ function setupAddSubcategoryForm() {
   });
 }
 
-// Make deleteSubcategory global so button onclick can access it
 window.deleteSubcategory = async function(subcategoryId) {
   if (!confirm("Are you sure you want to delete this subcategory? All entries will be lost.")) {
     return;

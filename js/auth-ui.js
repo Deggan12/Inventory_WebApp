@@ -33,32 +33,36 @@ async function setupAuthUI() {
     const { data } = await supabase.auth.getSession();
     const isLoggedIn = !!data.session;
 
-    // Check admin status
     let isAdmin = false;
+    let isEmployee = false;
+
     if (isLoggedIn) {
-      const { data: adminRow } = await supabase
-        .from("admins")
-        .select("user_id")
-        .eq("user_id", data.session.user.id)
-        .maybeSingle();
+      const userId = data.session.user.id;
+
+      const [{ data: adminRow }, { data: employeeRow }] = await Promise.all([
+        supabase.from("admins").select("user_id").eq("user_id", userId).maybeSingle(),
+        supabase.from("employees").select("user_id").eq("user_id", userId).maybeSingle()
+      ]);
+
       isAdmin = !!adminRow;
+      isEmployee = !!employeeRow;
     }
 
     // Top nav buttons
     if (loginBtn) loginBtn.style.display = isLoggedIn ? "none" : "inline-flex";
     if (logoutBtn) logoutBtn.style.display = isLoggedIn ? "inline-flex" : "none";
 
-    // Item page: hide Add Entry form if NOT logged in
-    if (entryForm) entryForm.style.display = isLoggedIn ? "flex" : "none";
-    if (loginHint) loginHint.style.display = isLoggedIn ? "none" : "block";
+    // Item page: show form if admin OR employee
+    if (entryForm) entryForm.style.display = (isAdmin || isEmployee) ? "flex" : "none";
+    if (loginHint) loginHint.style.display = (isAdmin || isEmployee) ? "none" : "block";
 
-    // Mobile menu buttons (if present)
+    // Mobile menu buttons
     const mLogin = document.getElementById("m-login-btn");
     const mLogout = document.getElementById("m-logout-btn");
     if (mLogin) mLogin.style.display = isLoggedIn ? "none" : "block";
     if (mLogout) mLogout.style.display = isLoggedIn ? "block" : "none";
 
-    // Egg Tracker nav link — admin only
+    // Egg Tracker nav — admin only
     document.querySelectorAll(".admin-only").forEach(el => {
       el.style.display = isAdmin ? "inline-flex" : "none";
     });

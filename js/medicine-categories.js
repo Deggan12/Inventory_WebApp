@@ -14,16 +14,17 @@ async function init() {
 
 async function checkAdmin() {
   const { data: { session } } = await supabase.auth.getSession();
-  
+
   if (!session) return;
 
-  const { data } = await supabase
-    .from("admins")
-    .select("user_id")
-    .eq("user_id", session.user.id)
-    .maybeSingle();
+  const userId = session.user.id;
 
-  if (data) {
+  const [{ data: adminRow }, { data: employeeRow }] = await Promise.all([
+    supabase.from("admins").select("user_id").eq("user_id", userId).maybeSingle(),
+    supabase.from("employees").select("user_id").eq("user_id", userId).maybeSingle()
+  ]);
+
+  if (adminRow || employeeRow) {
     isAdmin = true;
     document.getElementById("add-category-section").classList.remove("hidden");
   }
@@ -57,15 +58,13 @@ async function loadSubcategoryCounts() {
     return;
   }
 
-  // Count subcategories for each main category
   const counts = {};
   MAIN_CATEGORIES.forEach(cat => {
-    counts[cat] = subcategories.filter(sub => 
+    counts[cat] = subcategories.filter(sub =>
       sub.name.toLowerCase().startsWith(cat)
     ).length;
   });
 
-  // Update UI
   document.querySelectorAll(".category-card").forEach(card => {
     const category = card.dataset.category;
     const count = counts[category] || 0;

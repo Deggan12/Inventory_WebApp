@@ -17,6 +17,8 @@ let currentItem = null;
 const capitalize = (name) =>
   name === "oilcakes"
     ? "Oil Cakes"
+    : name === "nyjerseed"
+    ? "Nyjer Seeds"
     : name.charAt(0).toUpperCase() + name.slice(1);
 
 /* ===============================

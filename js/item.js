@@ -5,8 +5,13 @@ let isAdmin = false;
 const params = new URLSearchParams(window.location.search);
 const item = params.get("item");
 
+const itemTitles = {
+  oilcakes: "Oil Cakes",
+  nyjerseed: "Nyjer Seeds"
+};
+
 document.getElementById("item-title").textContent =
-  item.charAt(0).toUpperCase() + item.slice(1) + " Inventory";
+  (itemTitles[item] || (item.charAt(0).toUpperCase() + item.slice(1))) + " Inventory";
 
 const form = document.getElementById("entry-form");
 const tableBody = document.getElementById("table-body");
@@ -23,7 +28,8 @@ const MIN_STOCK = {
   premix: 200,
   oilcakes: 300,
   limestone: 250,
-  medicine: 100
+  medicine: 100,
+  nyjerseed: 100
 };
 
 async function checkAdmin() {

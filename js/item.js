@@ -82,6 +82,22 @@ function disableForm() {
   form.parentNode.insertBefore(msg, form);
 }
 
+// Get the true current stock by computing from last entry
+async function getCurrentStock(itemId, fallbackStock) {
+  const { data: lastEntry } = await supabase
+    .from("entries")
+    .select("opening, received, dispatched, lost")
+    .eq("item_id", itemId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (lastEntry) {
+    return lastEntry.opening + lastEntry.received - lastEntry.dispatched - lastEntry.lost;
+  }
+  return fallbackStock;
+}
+
 async function loadEntries() {
   tableBody.innerHTML = "";
 
@@ -121,7 +137,10 @@ async function loadEntries() {
   }
 
   entries.forEach(addRow);
-  checkLowStock(itemRow.stock);
+
+  // Use last entry's computed ending as the real stock for the alert
+  const trueStock = await getCurrentStock(itemRow.id, itemRow.stock);
+  checkLowStock(trueStock);
 }
 
 form.addEventListener("submit", async e => {
@@ -149,7 +168,8 @@ form.addEventListener("submit", async e => {
     return;
   }
 
-  const opening = itemRow.stock;
+  // Always compute opening from the last entry's ending balance
+  const opening = await getCurrentStock(itemRow.id, itemRow.stock);
   const ending = opening + received - dispatched - lost;
 
   if (ending < 0) {

@@ -1,197 +1,103 @@
 // js/egg-calculator.js
 
-const DEFAULT_RATIOS = {
-  "Maize": 0.75,
-  "Oil Cakes": 0.20,
-  "Bran": 0.05,
-  "Premix": 0.03,
-  "Limestone": 0.02
-};
+// ── Helpers ──────────────────────────────────────────────
+function storageKey(month) {
+  return `egg_calc_${month}`; // e.g. "egg_calc_2025-03"
+}
 
-let RATIOS = loadRatios();
+function getCurrentMonth() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  return `${y}-${m}`;
+}
 
-function loadRatios() {
-  const saved = localStorage.getItem("egg_ratios");
-  if (!saved) return { ...DEFAULT_RATIOS };
+function getInputs() {
+  return {
+    feed:        parseFloat(document.getElementById("price-feed").value)       || 0,
+    salary:      parseFloat(document.getElementById("cost-salary").value)      || 0,
+    utility:     parseFloat(document.getElementById("cost-utility").value)     || 0,
+    fuel:        parseFloat(document.getElementById("cost-fuel").value)        || 0,
+    maintenance: parseFloat(document.getElementById("cost-maintenance").value) || 0,
+    overhead:    parseFloat(document.getElementById("overhead").value)         || 0,
+    totalEggs:   parseInt(document.getElementById("total-eggs").value)         || 0,
+  };
+}
 
-  try {
-    const obj = JSON.parse(saved);
-    // basic safety: ensure all keys exist
-    for (const k of Object.keys(DEFAULT_RATIOS)) {
-      if (typeof obj[k] !== "number") obj[k] = DEFAULT_RATIOS[k];
-    }
-    return obj;
-  } catch {
-    return { ...DEFAULT_RATIOS };
+function setInputs(data) {
+  document.getElementById("price-feed").value       = data.feed        ?? "";
+  document.getElementById("cost-salary").value      = data.salary      ?? "";
+  document.getElementById("cost-utility").value     = data.utility     ?? "";
+  document.getElementById("cost-fuel").value        = data.fuel        ?? "";
+  document.getElementById("cost-maintenance").value = data.maintenance ?? "";
+  document.getElementById("overhead").value         = data.overhead    ?? "";
+  document.getElementById("total-eggs").value       = data.totalEggs   ?? "";
+}
+
+function clearInputs() {
+  ["price-feed","cost-salary","cost-utility","cost-fuel","cost-maintenance","overhead","total-eggs"]
+    .forEach(id => document.getElementById(id).value = "");
+  document.getElementById("results").classList.add("hidden");
+}
+
+// ── On page load: set month picker to current month ──────
+const monthSelect = document.getElementById("month-select");
+monthSelect.value = getCurrentMonth();
+
+// ── Load month data ───────────────────────────────────────
+document.getElementById("load-month-btn").addEventListener("click", () => {
+  const month = monthSelect.value;
+  if (!month) { alert("Please select a month."); return; }
+
+  const saved = localStorage.getItem(storageKey(month));
+  if (saved) {
+    setInputs(JSON.parse(saved));
+    document.getElementById("month-status").textContent = `✅ Loaded data for ${month}`;
+    calculate(); // auto-show results
+  } else {
+    clearInputs();
+    document.getElementById("month-status").textContent = `No data saved for ${month} yet.`;
   }
-}
-
-function saveRatios(ratiosObj) {
-  localStorage.setItem("egg_ratios", JSON.stringify(ratiosObj));
-  RATIOS = ratiosObj;
-}
-
-
-const calculateBtn = document.getElementById("calculate-btn");
-const resultsSection = document.getElementById("results");
-
-calculateBtn.addEventListener("click", calculate);
-const editBtn = document.getElementById("edit-ratios-btn");
-const editor = document.getElementById("ratios-editor");
-const saveBtn = document.getElementById("save-ratios-btn");
-const resetBtn = document.getElementById("reset-ratios-btn");
-const ratioError = document.getElementById("ratio-error");
-
-function fillRatioInputs() {
-const raw = JSON.parse(localStorage.getItem("egg_ratios_raw") || "null");
-if (raw) {
-  document.getElementById("ratio-maize").value = raw.maize;
-  document.getElementById("ratio-oilcakes").value = raw.oilcakes;
-  document.getElementById("ratio-bran").value = raw.bran;
-  document.getElementById("ratio-premix").value = raw.premix;
-  document.getElementById("ratio-limestone").value = raw.limestone;
-  const total = raw.total || (raw.maize + raw.oilcakes + raw.bran + raw.premix + raw.limestone);
-  ratioError.textContent = total !== 100 ? `ℹ️ Total is ${total}%. Ratios will be used as-is.` : "";
-} else {
-  document.getElementById("ratio-maize").value = Math.round(RATIOS["Maize"] * 100);
-  document.getElementById("ratio-oilcakes").value = Math.round(RATIOS["Oil Cakes"] * 100);
-  document.getElementById("ratio-bran").value = Math.round(RATIOS["Bran"] * 100);
-  document.getElementById("ratio-premix").value = Math.round(RATIOS["Premix"] * 100);
-  document.getElementById("ratio-limestone").value = Math.round(RATIOS["Limestone"] * 100);
-  ratioError.textContent = "";
-}
-}
-
-editBtn.addEventListener("click", () => {
-editor.classList.toggle("hidden");
-if (!editor.classList.contains("hidden")) fillRatioInputs();
 });
 
-saveBtn.addEventListener("click", () => {
-const maize = parseFloat(document.getElementById("ratio-maize").value) || 0;
-const oilcakes = parseFloat(document.getElementById("ratio-oilcakes").value) || 0;
-const bran = parseFloat(document.getElementById("ratio-bran").value) || 0;
-const premix = parseFloat(document.getElementById("ratio-premix").value) || 0;
-const limestone = parseFloat(document.getElementById("ratio-limestone").value) || 0;
+// ── Save month data ───────────────────────────────────────
+document.getElementById("save-month-btn").addEventListener("click", () => {
+  const month = monthSelect.value;
+  if (!month) { alert("Please select a month first."); return; }
 
-const total = maize + oilcakes + bran + premix + limestone;
-
-if (total === 0) {
-  ratioError.textContent = "Total cannot be 0%.";
-  return;
-}
-
-// Allow any total — show info if not 100%
-if (total !== 100) {
-  ratioError.textContent = `ℹ️ Total is ${total}%. Ratios will be used as-is (each ingredient's share of total feed).`;
-} else {
-  ratioError.textContent = "";
-}
-
-// Store raw percentages — divide by total (not 100) so quantities scale correctly
-const newRatios = {
-  "Maize": maize / total,
-  "Oil Cakes": oilcakes / total,
-  "Bran": bran / total,
-  "Premix": premix / total,
-  "Limestone": limestone / total
-};
-
-// Also save the raw input values so we can display them correctly
-const rawInputs = { maize, oilcakes, bran, premix, limestone, total };
-localStorage.setItem("egg_ratios_raw", JSON.stringify(rawInputs));
-
-saveRatios(newRatios);
-editor.classList.add("hidden");
-alert(`Saved! Total composition: ${total}%`);
+  const data = getInputs();
+  localStorage.setItem(storageKey(month), JSON.stringify(data));
+  document.getElementById("month-status").textContent = `💾 Saved for ${month}`;
 });
 
-resetBtn.addEventListener("click", () => {
-localStorage.removeItem("egg_ratios");
-localStorage.removeItem("egg_ratios_raw");
-RATIOS = { ...DEFAULT_RATIOS };
-fillRatioInputs();
-alert("Reset to default ratios!");
-});
-
+// ── Calculate ─────────────────────────────────────────────
+document.getElementById("calculate-btn").addEventListener("click", calculate);
 
 function calculate() {
-  // Get prices
-  const prices = {
-    "Maize": parseFloat(document.getElementById("price-maize").value) || 0,
-    "Oil Cakes": parseFloat(document.getElementById("price-oilcakes").value) || 0,
-    "Bran": parseFloat(document.getElementById("price-bran").value) || 0,
-    "Premix": parseFloat(document.getElementById("price-premix").value) || 0,
-    "Limestone": parseFloat(document.getElementById("price-limestone").value) || 0
-  };
+  const { feed, salary, utility, fuel, maintenance, overhead, totalEggs } = getInputs();
 
-  // Get production data
-  const totalFeed = parseFloat(document.getElementById("total-feed").value) || 0;
-  const overhead = parseFloat(document.getElementById("overhead").value) || 0;
-  const totalEggs = parseInt(document.getElementById("total-eggs").value) || 0;
-
-  // Validate inputs
-  if (totalFeed === 0 || totalEggs === 0) {
-    alert("Please fill in all required fields");
+  if (totalEggs === 0) {
+    alert("Please enter the total eggs produced.");
     return;
   }
 
-  // Calculate quantities and costs
-  const quantities = {};
-  const costs = {};
-  let totalFeedCost = 0;
+  const totalOtherCosts = salary + utility + fuel + maintenance + overhead;
+  const totalCost       = feed + totalOtherCosts;
+  const costPerEgg      = totalCost / totalEggs;
+  const costPerTray     = costPerEgg * 30;
 
-  for (const [ingredient, ratio] of Object.entries(RATIOS)) {
-    quantities[ingredient] = ratio * totalFeed;
-    costs[ingredient] = quantities[ingredient] * prices[ingredient];
-    totalFeedCost += costs[ingredient];
-  }
+  // Display
+  document.getElementById("result-feed-cost").textContent    = `$${feed.toFixed(2)}`;
+  document.getElementById("result-salary").textContent       = `$${salary.toFixed(2)}`;
+  document.getElementById("result-utility").textContent      = `$${utility.toFixed(2)}`;
+  document.getElementById("result-fuel").textContent         = `$${fuel.toFixed(2)}`;
+  document.getElementById("result-maintenance").textContent  = `$${maintenance.toFixed(2)}`;
+  document.getElementById("result-overhead").textContent     = `$${overhead.toFixed(2)}`;
+  document.getElementById("result-total-cost").textContent   = `$${totalCost.toFixed(2)}`;
+  document.getElementById("result-cost-per-egg").textContent = `$${costPerEgg.toFixed(4)}`;
+  document.getElementById("result-cost-per-tray").textContent= `$${costPerTray.toFixed(2)}`;
 
-  const totalCost = totalFeedCost + overhead;
-  const costPerEgg = totalCost / totalEggs;
-  const costPerTray = costPerEgg * 30;
-
-  // Display results
-  displayResults(totalFeedCost, overhead, totalCost, costPerEgg, costPerTray);
-  displayBreakdown(quantities, costs);
-
-  // Show results section
-  resultsSection.classList.remove("hidden");
-  
-  // Smooth scroll to results
-  resultsSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
-}
-
-function displayResults(feedCost, overhead, total, perEgg, perTray) {
-  document.getElementById("result-feed-cost").textContent = `$${feedCost.toFixed(2)}`;
-  document.getElementById("result-overhead-cost").textContent = `$${overhead.toFixed(2)}`;
-  document.getElementById("result-total-cost").textContent = `$${total.toFixed(2)}`;
-  document.getElementById("result-cost-per-egg").textContent = `$${perEgg.toFixed(4)}`;
-  document.getElementById("result-cost-per-tray").textContent = `$${perTray.toFixed(2)}`;
-}
-
-function displayBreakdown(quantities, costs) {
-  const tbody = document.getElementById("breakdown-body");
-  tbody.innerHTML = "";
-
-  const raw = JSON.parse(localStorage.getItem("egg_ratios_raw") || "null");
-  const rawMap = raw ? {
-    "Maize": raw.maize,
-    "Oil Cakes": raw.oilcakes,
-    "Bran": raw.bran,
-    "Premix": raw.premix,
-    "Limestone": raw.limestone
-  } : null;
-
-  for (const [ingredient, ratio] of Object.entries(RATIOS)) {
-    const displayPct = rawMap ? rawMap[ingredient] : (ratio * 100).toFixed(0);
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td><strong>${ingredient}</strong></td>
-      <td>${displayPct}%</td>
-      <td>${quantities[ingredient].toFixed(2)}</td>
-      <td>$${costs[ingredient].toFixed(2)}</td>
-    `;
-    tbody.appendChild(row);
-  }
+  const results = document.getElementById("results");
+  results.classList.remove("hidden");
+  results.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }

@@ -25,37 +25,54 @@
     <a href="login.html" class="nav-btn" id="login-btn">Login</a>
     <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
   </nav>
-  
 </header>
 
 <main class="content">
   <h2 class="page-title">Egg Production Cost Calculator</h2>
 
+  <!-- MONTH SELECTOR -->
   <div class="calculator-container">
-    
-    <!-- INGREDIENT PRICES SECTION -->
+    <div class="calculator-section" style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+      <label for="month-select" style="font-weight:700; font-size:15px; color:#333;">Month:</label>
+      <input type="month" id="month-select" style="padding:10px 14px; border-radius:8px; border:2px solid #ddd; font-size:15px; font-family:inherit;" />
+      <button id="load-month-btn" class="calculate-btn" style="width:auto; padding:10px 22px; font-size:15px; margin:0;">Load</button>
+      <span id="month-status" style="font-size:13px; color:#888;"></span>
+    </div>
+
+    <!-- FEED COST SECTION -->
     <div class="calculator-section">
-      <h3>Ingredient Prices (per quintal)</h3>
+      <h3>Feed Cost</h3>
       <div class="input-grid">
         <div class="input-group">
-          <label for="price-maize">Maize</label>
-          <input type="number" id="price-maize" placeholder="0.00" step="0.01" required />
+          <label for="price-feed">Feed Cost</label>
+          <input type="number" id="price-feed" placeholder="0.00" step="0.01" />
+        </div>
+      </div>
+    </div>
+
+    <!-- OTHER COSTS SECTION -->
+    <div class="calculator-section">
+      <h3>Other Costs</h3>
+      <div class="input-grid">
+        <div class="input-group">
+          <label for="cost-salary">Salary &amp; Taxes</label>
+          <input type="number" id="cost-salary" placeholder="0.00" step="0.01" />
         </div>
         <div class="input-group">
-          <label for="price-oilcakes">Oil Cakes</label>
-          <input type="number" id="price-oilcakes" placeholder="0.00" step="0.01" required />
+          <label for="cost-utility">Utility</label>
+          <input type="number" id="cost-utility" placeholder="0.00" step="0.01" />
         </div>
         <div class="input-group">
-          <label for="price-bran">Bran</label>
-          <input type="number" id="price-bran" placeholder="0.00" step="0.01" required />
+          <label for="cost-fuel">Fuel</label>
+          <input type="number" id="cost-fuel" placeholder="0.00" step="0.01" />
         </div>
         <div class="input-group">
-          <label for="price-premix">Premix</label>
-          <input type="number" id="price-premix" placeholder="0.00" step="0.01" required />
+          <label for="cost-maintenance">Maintenance</label>
+          <input type="number" id="cost-maintenance" placeholder="0.00" step="0.01" />
         </div>
         <div class="input-group">
-          <label for="price-limestone">Limestone</label>
-          <input type="number" id="price-limestone" placeholder="0.00" step="0.01" required />
+          <label for="overhead">Other Costs</label>
+          <input type="number" id="overhead" placeholder="0.00" step="0.01" />
         </div>
       </div>
     </div>
@@ -65,73 +82,44 @@
       <h3>Production Data</h3>
       <div class="input-grid">
         <div class="input-group">
-          <label for="total-feed">Total Feed Produced (quintals)</label>
-          <input type="number" id="total-feed" placeholder="0.00" step="0.01" required />
-        </div>
-        <div class="input-group">
-          <label for="overhead">Overhead Cost</label>
-          <input type="number" id="overhead" placeholder="0.00" step="0.01" required />
-        </div>
-        <div class="input-group">
           <label for="total-eggs">Total Eggs Produced</label>
-          <input type="number" id="total-eggs" placeholder="0" required />
+          <input type="number" id="total-eggs" placeholder="0" />
         </div>
       </div>
     </div>
 
-    <!-- CALCULATE BUTTON -->
+    <!-- BUTTONS -->
     <button id="calculate-btn" class="calculate-btn">Calculate Cost</button>
-    <button id="edit-ratios-btn" class="calculate-btn" style="background:#444; margin-top:-10px;">
-      Edit Ingredient Percentages
-    </button>
-    
-    <div id="ratios-editor" class="calculator-section hidden">
-      <h3>Edit Mix Percentages</h3>
-    
-      <div class="input-grid">
-        <div class="input-group">
-          <label>Maize (%)</label>
-          <input type="number" id="ratio-maize" min="0" step="1" />
-        </div>
-        <div class="input-group">
-          <label>Oil Cakes (%)</label>
-          <input type="number" id="ratio-oilcakes" min="0" step="1" />
-        </div>
-        <div class="input-group">
-          <label>Bran (%)</label>
-          <input type="number" id="ratio-bran" min="0" step="1" />
-        </div>
-        <div class="input-group">
-          <label>Premix (%)</label>
-          <input type="number" id="ratio-premix" min="0" step="1" />
-        </div>
-        <div class="input-group">
-          <label>Limestone (%)</label>
-          <input type="number" id="ratio-limestone" min="0" step="1" />
-        </div>
-      </div>
-    
-      <p id="ratio-error" style="color:#b10000; font-weight:700; margin-top:10px;"></p>
-    
-      <div style="display:flex; gap:10px; margin-top:10px;">
-        <button id="save-ratios-btn" class="calculate-btn" style="margin:0;">Save</button>
-        <button id="reset-ratios-btn" class="calculate-btn" style="background:#777; margin:0;">Reset</button>
-      </div>
-    </div>
-    
+    <button id="save-month-btn" class="calculate-btn" style="background:#444; margin-top:-10px;">Save for This Month</button>
 
     <!-- RESULTS SECTION -->
     <div id="results" class="results-section hidden">
       <h3>Results</h3>
-      
+
       <div class="results-summary">
         <div class="result-card">
-          <h4>Total Feed Cost</h4>
+          <h4>Feed Cost</h4>
           <p id="result-feed-cost">—</p>
         </div>
         <div class="result-card">
-          <h4>Total Overhead Cost</h4>
-          <p id="result-overhead-cost">—</p>
+          <h4>Salary &amp; Taxes</h4>
+          <p id="result-salary">—</p>
+        </div>
+        <div class="result-card">
+          <h4>Utility</h4>
+          <p id="result-utility">—</p>
+        </div>
+        <div class="result-card">
+          <h4>Fuel</h4>
+          <p id="result-fuel">—</p>
+        </div>
+        <div class="result-card">
+          <h4>Maintenance</h4>
+          <p id="result-maintenance">—</p>
+        </div>
+        <div class="result-card">
+          <h4>Other Costs</h4>
+          <p id="result-overhead">—</p>
         </div>
         <div class="result-card">
           <h4>Total Production Cost</h4>
@@ -146,22 +134,6 @@
           <p id="result-cost-per-tray">—</p>
         </div>
       </div>
-
-      <div class="breakdown-section">
-        <h4>Ingredient Breakdown</h4>
-        <table class="breakdown-table">
-          <thead>
-            <tr>
-              <th>Ingredient</th>
-              <th>Ratio</th>
-              <th>Quantity (quintals)</th>
-              <th>Cost</th>
-            </tr>
-          </thead>
-          <tbody id="breakdown-body">
-          </tbody>
-        </table>
-      </div>
     </div>
 
   </div>
@@ -175,10 +147,7 @@
 <script>
   const burger = document.getElementById("burger");
   const nav = document.querySelector(".nav-right");
-
-  burger.addEventListener("click", () => {
-    nav.classList.toggle("show");
-  });
+  burger.addEventListener("click", () => nav.classList.toggle("show"));
 </script>
 
 </body>

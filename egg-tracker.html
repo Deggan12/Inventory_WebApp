@@ -19,8 +19,9 @@
     <a href="dashboard.html" class="nav-btn">Dashboard</a>
     <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
     <a href="egg-tracker.html" class="nav-btn admin-only" style="display:none;">Egg Tracker</a>
+    <a href="cows.html" class="nav-btn admin-only" style="display:none;">Cows</a>
     <a href="login.html" class="nav-btn" id="login-btn">Login</a>
-    <button class="nav-btn" id="logout-btn">Logout</button>
+    <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
   </nav>
 </header>
 
@@ -67,7 +68,6 @@
 
   <div class="tracker-form-card hidden" id="entry-panel">
     <h3>Add Entry</h3>
-
     <div class="tracker-fields-row">
       <div class="tracker-field">
         <label>Date</label>
@@ -92,7 +92,7 @@
     <div id="sales-container"></div>
     <button class="tracker-add-sale-btn" id="add-sale-btn">+ Add Sale Row</button>
 
-    <div class="tracker-field" id="remarks-field">
+    <div class="tracker-field" id="remarks-field" style="margin-top:18px;">
       <label>Remarks (optional)</label>
       <textarea id="entry-remarks" placeholder="e.g. market sale, broken eggs noted…"></textarea>
     </div>

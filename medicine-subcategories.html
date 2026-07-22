@@ -6,22 +6,20 @@
   <title>Medicine Subcategories - Farah Poultry Farm</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
-
-<body>
+<body data-public="true">
 
 <header class="top-bar">
   <div class="nav-left">
     <img src="/images/logo_noBG.JPG" class="logo">
     <h1>Farah Poultry Farm</h1>
   </div>
-
   <div class="burger" id="burger">☰</div>
-
   <nav class="nav-right">
     <a href="index.html" class="nav-btn">Home</a>
     <a href="dashboard.html" class="nav-btn">Dashboard</a>
     <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
     <a href="egg-tracker.html" class="nav-btn admin-only" style="display:none;">Egg Tracker</a>
+    <a href="cows.html" class="nav-btn admin-only" style="display:none;">Cows</a>
     <a href="login.html" class="nav-btn" id="login-btn">Login</a>
     <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
   </nav>
@@ -29,14 +27,13 @@
 
 <main class="content">
   <div class="breadcrumb">
-    <a href="index.html">Home</a> › 
-    <a href="medicine-categories.html">Medicine</a> › 
+    <a href="index.html">Home</a> ›
+    <a href="medicine-categories.html">Medicine</a> ›
     <span id="category-name">—</span>
   </div>
 
   <h2 class="page-title" id="page-title">Subcategories</h2>
 
-  <!-- Add Subcategory Form (Admin Only) -->
   <div id="add-subcategory-section" class="add-category-section hidden">
     <form id="add-subcategory-form" class="add-category-form">
       <input type="text" id="subcategory-name" placeholder="New subcategory name" required />
@@ -45,25 +42,16 @@
     </form>
   </div>
 
-  <!-- Subcategories Grid -->
-  <div id="subcategories-grid" class="categories-grid">
-    <!-- Dynamically populated -->
-  </div>
+  <div id="subcategories-grid" class="categories-grid"></div>
 </main>
 
 <footer>© Farah Poultry Farm</footer>
 
 <script type="module" src="/js/medicine-subcategories.js"></script>
 <script type="module" src="/js/auth-ui.js"></script>
-
 <script>
-  const burger = document.getElementById("burger");
-  const nav = document.querySelector(".nav-right");
-
-  burger.addEventListener("click", () => {
-    nav.classList.toggle("show");
-  });
+  document.getElementById("burger").addEventListener("click", () =>
+    document.querySelector(".nav-right").classList.toggle("show"));
 </script>
-
 </body>
 </html>

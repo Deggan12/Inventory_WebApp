@@ -6,7 +6,6 @@
   <title>Item Inventory - Farah Poultry Farm</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
-
 <body data-public="true">
 
 <header class="top-bar">
@@ -14,14 +13,13 @@
     <img src="/images/logo_noBG.JPG" class="logo" alt="Farah Poultry Farm logo">
     <h1>Farah Poultry Farm</h1>
   </div>
-
   <div class="burger" id="burger">☰</div>
-
-  <nav class="nav-right" id="nav-menu">
+  <nav class="nav-right">
     <a href="index.html" class="nav-btn">Home</a>
     <a href="dashboard.html" class="nav-btn">Dashboard</a>
     <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
     <a href="egg-tracker.html" class="nav-btn admin-only" style="display:none;">Egg Tracker</a>
+    <a href="cows.html" class="nav-btn admin-only" style="display:none;">Cows</a>
     <a href="login.html" class="nav-btn" id="login-btn">Login</a>
     <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
   </nav>
@@ -64,12 +62,9 @@
 
 <script type="module" src="/js/item.js"></script>
 <script type="module" src="/js/auth-ui.js"></script>
-
 <script>
-  const burger = document.getElementById("burger");
-  const nav = document.querySelector(".nav-right");
-  burger.addEventListener("click", () => nav.classList.toggle("show"));
+  document.getElementById("burger").addEventListener("click", () =>
+    document.querySelector(".nav-right").classList.toggle("show"));
 </script>
-
 </body>
 </html>

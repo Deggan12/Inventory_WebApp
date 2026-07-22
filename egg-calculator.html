@@ -6,22 +6,20 @@
   <title>Egg Production Cost - Farah Poultry Farm</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
-
-<body>
+<body data-public="true">
 
 <header class="top-bar">
   <div class="nav-left">
     <img src="/images/logo_noBG.JPG" class="logo">
     <h1>Farah Poultry Farm</h1>
   </div>
-
   <div class="burger" id="burger">☰</div>
-
   <nav class="nav-right">
     <a href="index.html" class="nav-btn">Home</a>
     <a href="dashboard.html" class="nav-btn">Dashboard</a>
     <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
     <a href="egg-tracker.html" class="nav-btn admin-only" style="display:none;">Egg Tracker</a>
+    <a href="cows.html" class="nav-btn admin-only" style="display:none;">Cows</a>
     <a href="login.html" class="nav-btn" id="login-btn">Login</a>
     <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
   </nav>
@@ -30,7 +28,6 @@
 <main class="content">
   <h2 class="page-title">Egg Production Cost Calculator</h2>
 
-  <!-- MONTH SELECTOR -->
   <div class="calculator-container">
     <div class="calculator-section" style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
       <label for="month-select" style="font-weight:700; font-size:15px; color:#333;">Month:</label>
@@ -39,7 +36,6 @@
       <span id="month-status" style="font-size:13px; color:#888;"></span>
     </div>
 
-    <!-- FEED COST SECTION -->
     <div class="calculator-section">
       <h3>Feed Cost</h3>
       <div class="input-grid">
@@ -50,7 +46,6 @@
       </div>
     </div>
 
-    <!-- OTHER COSTS SECTION -->
     <div class="calculator-section">
       <h3>Other Costs</h3>
       <div class="input-grid">
@@ -77,7 +72,6 @@
       </div>
     </div>
 
-    <!-- PRODUCTION DATA SECTION -->
     <div class="calculator-section">
       <h3>Production Data</h3>
       <div class="input-grid">
@@ -88,14 +82,11 @@
       </div>
     </div>
 
-    <!-- BUTTONS -->
     <button id="calculate-btn" class="calculate-btn">Calculate Cost</button>
     <button id="save-month-btn" class="calculate-btn" style="background:#444; margin-top:-10px;">Save for This Month</button>
 
-    <!-- RESULTS SECTION -->
     <div id="results" class="results-section hidden">
       <h3>Results</h3>
-
       <div class="results-summary">
         <div class="result-card">
           <h4>Feed Cost</h4>
@@ -143,12 +134,9 @@
 
 <script type="module" src="/js/egg-calculator.js"></script>
 <script type="module" src="/js/auth-ui.js"></script>
-
 <script>
-  const burger = document.getElementById("burger");
-  const nav = document.querySelector(".nav-right");
-  burger.addEventListener("click", () => nav.classList.toggle("show"));
+  document.getElementById("burger").addEventListener("click", () =>
+    document.querySelector(".nav-right").classList.toggle("show"));
 </script>
-
 </body>
 </html>

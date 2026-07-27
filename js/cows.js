@@ -49,24 +49,23 @@ function setupMonthNav() {
 }
 
 function setupLiveCalc() {
-  const revenueIds = ["entry-revenue"];
-  const expenseIds = ["entry-feed", "entry-medicine", "entry-labour", "entry-other"];
-  const allIds = [...revenueIds, ...expenseIds];
-
-  allIds.forEach(id => {
+  ["entry-milk-sold", "entry-price-per-litre", "entry-feed",
+   "entry-medicine", "entry-labour", "entry-other"].forEach(id => {
     document.getElementById(id).addEventListener("input", updateLiveCalc);
   });
 }
 
 function updateLiveCalc() {
-  const revenue   = parseFloat(document.getElementById("entry-revenue").value)  || 0;
-  const feed      = parseFloat(document.getElementById("entry-feed").value)      || 0;
-  const medicine  = parseFloat(document.getElementById("entry-medicine").value)  || 0;
-  const labour    = parseFloat(document.getElementById("entry-labour").value)    || 0;
-  const other     = parseFloat(document.getElementById("entry-other").value)     || 0;
+  const sold      = parseFloat(document.getElementById("entry-milk-sold").value)        || 0;
+  const price     = parseFloat(document.getElementById("entry-price-per-litre").value)  || 0;
+  const feed      = parseFloat(document.getElementById("entry-feed").value)             || 0;
+  const medicine  = parseFloat(document.getElementById("entry-medicine").value)         || 0;
+  const labour    = parseFloat(document.getElementById("entry-labour").value)           || 0;
+  const other     = parseFloat(document.getElementById("entry-other").value)            || 0;
 
+  const revenue       = sold * price;
   const totalExpenses = feed + medicine + labour + other;
-  const net = revenue - totalExpenses;
+  const net           = revenue - totalExpenses;
 
   document.getElementById("calc-total-revenue").textContent  = fmtCurrency(revenue);
   document.getElementById("calc-total-expenses").textContent = fmtCurrency(totalExpenses);
@@ -80,8 +79,8 @@ function monthLabel() {
 }
 
 async function loadMonth() {
-  document.getElementById("month-label").textContent     = monthLabel();
-  document.getElementById("table-heading").textContent   = `Entries — ${monthLabel()}`;
+  document.getElementById("month-label").textContent   = monthLabel();
+  document.getElementById("table-heading").textContent = `Entries — ${monthLabel()}`;
 
   const mm      = String(currentMonth + 1).padStart(2, "0");
   const from    = `${currentYear}-${mm}-01`;
@@ -129,9 +128,11 @@ function renderTable() {
   const tbody = document.getElementById("entries-tbody");
 
   if (!monthEntries.length) {
-    tbody.innerHTML = `<tr><td colspan="11" class="tracker-no-entries">No entries for this month yet.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="13" class="tracker-no-entries">No entries for this month yet.</td></tr>`;
     return;
   }
+
+  let cumulativeNet = 0;
 
   tbody.innerHTML = monthEntries.map(r => {
     const totalExpenses = Number(r.expense_feed     || 0)
@@ -139,12 +140,14 @@ function renderTable() {
                         + Number(r.expense_labour   || 0)
                         + Number(r.expense_other    || 0);
     const net = Number(r.milk_revenue || 0) - totalExpenses;
+    cumulativeNet += net;
 
     return `
       <tr>
         <td>${fmtDate(r.date)}</td>
         <td>${r.milk_produced ?? 0} L</td>
         <td>${r.milk_sold ?? 0} L</td>
+        <td>${fmtCurrency(r.price_per_litre || 0)}</td>
         <td>${fmtCurrency(r.milk_revenue || 0)}</td>
         <td>${fmtCurrency(r.expense_feed || 0)}</td>
         <td>${fmtCurrency(r.expense_medicine || 0)}</td>
@@ -152,6 +155,7 @@ function renderTable() {
         <td>${fmtCurrency(r.expense_other || 0)}</td>
         <td>${fmtCurrency(totalExpenses)}</td>
         <td style="color:${net >= 0 ? '#2A9D8F' : '#dd3326'}; font-weight:700;">${fmtCurrency(net)}</td>
+        <td style="color:${cumulativeNet >= 0 ? '#2A9D8F' : '#dd3326'}; font-weight:700;">${fmtCurrency(cumulativeNet)}</td>
         <td class="tracker-dim">${r.remarks || "—"}</td>
       </tr>
     `;
@@ -164,13 +168,14 @@ async function saveEntry() {
 
   if (!date) { showMsg("Please select a date.", "error"); return; }
 
-  const milk_produced    = parseFloat(document.getElementById("entry-milk-produced").value) || 0;
-  const milk_sold        = parseFloat(document.getElementById("entry-milk-sold").value)      || 0;
-  const milk_revenue     = parseFloat(document.getElementById("entry-revenue").value)        || 0;
-  const expense_feed     = parseFloat(document.getElementById("entry-feed").value)           || 0;
-  const expense_medicine = parseFloat(document.getElementById("entry-medicine").value)       || 0;
-  const expense_labour   = parseFloat(document.getElementById("entry-labour").value)         || 0;
-  const expense_other    = parseFloat(document.getElementById("entry-other").value)          || 0;
+  const milk_produced    = parseFloat(document.getElementById("entry-milk-produced").value)    || 0;
+  const milk_sold        = parseFloat(document.getElementById("entry-milk-sold").value)         || 0;
+  const price_per_litre  = parseFloat(document.getElementById("entry-price-per-litre").value)   || 0;
+  const milk_revenue     = milk_sold * price_per_litre;
+  const expense_feed     = parseFloat(document.getElementById("entry-feed").value)              || 0;
+  const expense_medicine = parseFloat(document.getElementById("entry-medicine").value)          || 0;
+  const expense_labour   = parseFloat(document.getElementById("entry-labour").value)            || 0;
+  const expense_other    = parseFloat(document.getElementById("entry-other").value)             || 0;
   const remarks          = document.getElementById("entry-remarks").value.trim();
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -181,6 +186,7 @@ async function saveEntry() {
     date,
     milk_produced,
     milk_sold,
+    price_per_litre,
     milk_revenue,
     expense_feed,
     expense_medicine,
@@ -200,7 +206,7 @@ async function saveEntry() {
 
   showMsg("Entry saved ✓", "success");
 
-  ["entry-milk-produced", "entry-milk-sold", "entry-revenue",
+  ["entry-milk-produced", "entry-milk-sold", "entry-price-per-litre",
    "entry-feed", "entry-medicine", "entry-labour", "entry-other", "entry-remarks"]
     .forEach(id => document.getElementById(id).value = "");
 

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cows - Farah Poultry Farm</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body data-public="true">
+
+<header class="top-bar">
+  <div class="nav-left">
+    <img src="/images/logo_noBG.JPG" class="logo">
+    <h1>Farah Poultry Farm</h1>
+  </div>
+  <div class="burger" id="burger">☰</div>
+  <nav class="nav-right">
+    <a href="index.html" class="nav-btn">Home</a>
+    <a href="dashboard.html" class="nav-btn">Dashboard</a>
+    <a href="egg-calculator.html" class="nav-btn">Egg Calculator</a>
+    <a href="egg-tracker.html" class="nav-btn admin-only" style="display:none;">Egg Tracker</a>
+    <a href="cows.html" class="nav-btn admin-only" style="display:none;">Cows</a>
+    <a href="login.html" class="nav-btn" id="login-btn">Login</a>
+    <button class="nav-btn" id="logout-btn" style="display:none;">Logout</button>
+  </nav>
+</header>
+
+<main class="content">
+  <h2 class="page-title">Cow Management</h2>
+
+  <div class="month-nav">
+    <button class="month-arrow" id="prev-month">&#8592;</button>
+    <h2 id="month-label">—</h2>
+    <button class="month-arrow" id="next-month">&#8594;</button>
+  </div>
+
+  <!-- MONTHLY SUMMARY STATS -->
+  <div class="tracker-summary">
+    <div class="tracker-stat">
+      <h4>Milk Produced</h4>
+      <p id="sum-milk">—</p>
+      <span>litres this month</span>
+    </div>
+    <div class="tracker-stat">
+      <h4>Milk Sold</h4>
+      <p id="sum-sold">—</p>
+      <span>litres this month</span>
+    </div>
+    <div class="tracker-stat">
+      <h4>Total Revenue</h4>
+      <p id="sum-revenue">—</p>
+      <span>this month</span>
+    </div>
+    <div class="tracker-stat">
+      <h4>Total Expenses</h4>
+      <p id="sum-expenses">—</p>
+      <span>this month</span>
+    </div>
+    <div class="tracker-stat">
+      <h4>Net Income</h4>
+      <p id="sum-net">—</p>
+      <span>this month</span>
+    </div>
+  </div>
+
+  <!-- ACCESS DENIED -->
+  <div id="access-denied" class="hidden" style="text-align:center; padding:80px 20px;">
+    <h2 style="font-size:2rem; margin-bottom:16px;">🔒 Access Denied</h2>
+    <p style="color:#666; font-size:1.1rem; margin-bottom:24px;">
+      You need to be logged in as an admin to view this page.
+    </p>
+    <a href="login.html" style="background:#DD3326; color:white; padding:12px 28px; border-radius:8px; text-decoration:none; font-weight:600;">
+      Log In
+    </a>
+  </div>
+
+  <!-- ENTRY FORM -->
+  <div id="entry-panel" class="hidden">
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px;">
+
+      <!-- REVENUE CARD -->
+      <div class="tracker-form-card" style="margin-bottom:0;">
+        <h3 style="color:#2A9D8F; margin-bottom:18px;">💰 Revenue</h3>
+        <div class="tracker-field" style="margin-bottom:14px;">
+          <label>Date</label>
+          <input type="date" id="entry-date" />
+        </div>
+        <div class="tracker-field" style="margin-bottom:14px;">
+          <label>Daily Milk Production (L)</label>
+          <input type="number" id="entry-milk-produced" placeholder="0" min="0" />
+        </div>
+        <div class="tracker-field" style="margin-bottom:14px;">
+          <label>Sales — Litres Sold (L)</label>
+          <input type="number" id="entry-milk-sold" placeholder="0" min="0" />
+        </div>
+        <div class="tracker-field" style="margin-bottom:14px;">
+          <label>Revenue ($)</label>
+          <input type="number" id="entry-revenue" placeholder="0.00" min="0" step="0.01" />
+        </div>
+        <div style="background:#f0faf8; border-radius:10px; padding:14px 16px; margin-top:8px;">
+          <p style="font-size:12px; font-weight:700; color:#2A9D8F; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Total Revenue</p>
+          <p id="calc-total-revenue" style="font-size:22px; font-weight:700; color:#2A9D8F;">$0.00</p>
+        </div>
+      </div>
+
+      <!-- EXPENSES CARD -->
+      <div class="tracker-form-card" style="margin-bottom:0;">
+        <h3 style="color:#dd3326; margin-bottom:18px;">📋 Expenses</h3>
+        <div class="tracker-field" style="margin-bottom:14px;">
+          <label>Feed ($)</label>
+          <input type="number" id="entry-feed" placeholder="0.00" min="0" step="0.01" />
+        </div>
+        <div class="tracker-field" style="margin-bottom:14px;">
+          <label>Medicine ($)</label>
+          <input type="number" id="entry-medicine" placeholder="0.00" min="0" step="0.01" />
+        </div>
+        <div class="tracker-field" style="margin-bottom:14px;">
+          <label>Labour ($)</label>
+          <input type="number" id="entry-labour" placeholder="0.00" min="0" step="0.01" />
+        </div>
+        <div class="tracker-field" style="margin-bottom:14px;">
+          <label>Other ($)</label>
+          <input type="number" id="entry-other" placeholder="0.00" min="0" step="0.01" />
+        </div>
+        <div style="background:#fff4f4; border-radius:10px; padding:14px 16px; margin-top:8px;">
+          <p style="font-size:12px; font-weight:700; color:#dd3326; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Total Expenses</p>
+          <p id="calc-total-expenses" style="font-size:22px; font-weight:700; color:#dd3326;">$0.00</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- NET INCOME + REMARKS + SUBMIT -->
+    <div class="tracker-form-card">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:end;">
+        <div>
+          <p style="font-size:13px; font-weight:700; color:#666; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">Net Income (auto-calculated)</p>
+          <p id="calc-net-income" style="font-size:28px; font-weight:700; color:#2A9D8F;">$0.00</p>
+        </div>
+        <div class="tracker-field">
+          <label>Remarks (optional)</label>
+          <textarea id="entry-remarks" placeholder="Any notes…"></textarea>
+        </div>
+      </div>
+      <div class="tracker-form-actions" style="margin-top:16px;">
+        <button class="tracker-submit-btn" id="save-entry-btn">Add Entry</button>
+        <span class="tracker-form-msg hidden" id="form-msg"></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ENTRIES TABLE -->
+  <div class="tracker-table-card">
+    <h3 id="table-heading">Entries</h3>
+    <table class="tracker-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Milk Produced (L)</th>
+          <th>Milk Sold (L)</th>
+          <th>Revenue</th>
+          <th>Feed</th>
+          <th>Medicine</th>
+          <th>Labour</th>
+          <th>Other</th>
+          <th>Total Expenses</th>
+          <th>Net Income</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody id="entries-tbody">
+        <tr><td colspan="11" class="tracker-no-entries">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer>© Farah Poultry Farm</footer>
+
+<script type="module" src="/js/cows.js"></script>
+<script type="module" src="/js/auth-ui.js"></script>
+<script>
+  document.getElementById("burger").addEventListener("click", () =>
+    document.querySelector(".nav-right").classList.toggle("show"));
+</script>
+</body>
+</html>
